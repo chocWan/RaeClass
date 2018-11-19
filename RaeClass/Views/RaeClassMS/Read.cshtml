@@ -1,0 +1,215 @@
+﻿@{
+    ViewData["Title"] = "Read";
+    Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
+}
+<div class="panel-body" style="padding-bottom:0px;">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="text-align:center"><h3>辅料下阶用量及最小用量维护</h3></div>
+        <div class="panel-body">
+
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">请选择问题受理类型</h4>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
+
+                                <label class="control-label col-sm-2">辅料编码<font class="red">*</font></label>
+                                <div class="col-sm-8">
+                                    <div class="has-feedback">
+                                        <input id="MATNR" removezero=true class="form-control" type="text" readonly />
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
+
+                                <label class="control-label col-sm-2">辅料描述<font class="red">*</font></label>
+                                <div class="col-sm-8">
+                                    <input id="MAKTX" required type="text" class="form-control">
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
+
+                                <label class="control-label col-sm-2">下阶用量<font class="red">*</font></label>
+                                <div class="col-sm-8">
+                                    <input id="UnderOrderQuan" required type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
+                                <label class="control-label col-sm-2">最小用量<font class="red">*</font></label>
+                                <div class="col-sm-8">
+                                    <input id="MinUsage" required type="text" class="form-control">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="_addItem" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="formSearch" class="form-horizontal">
+
+                <div id="toolbar" style="width:1300px;margin-bottom:10px;" class="btn-group">
+                    <button id="btn_add" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                    </button>
+                    <button id="btn_delete" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                    </button>
+                    <div class="col-sm-2" style="width:73px;padding:0px;">
+                        <span id="import" class="input-group-btn" style="float:right;width: 72px;">
+                            <input id="ImportFile" type="file" style="width: 72px;height: 35px;z-index:2;right: 0px;top:0px;position: absolute;opacity:0;left: 0px;cursor:pointer">
+                            <span class="btn btn-default" style="z-index:1;" title="导入">
+                                <span class="glyphicon glyphicon-upload"></span>
+                                导入
+                            </span>
+                        </span>
+                    </div>
+                    <button id="btn_exportContent" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>导出
+                    </button>
+                    <button id="btn_export" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>模版下载
+                    </button>
+
+                    <label class="control-label col-sm-1" style="text-align:center" for="txt_search_barcodeinfo"><b>物料编码</b></label>
+                    <div class="col-sm-3">
+                        <input type="text" name="BarcodeInfo" class="form-control autoc" id="startMatnr">
+                    </div>
+
+                    <label class="control-label col-sm-1" style="text-align:center;width:25px" for="txt_search_productversion"><b>至</b></label>
+                    <div class="col-sm-3">
+                        <input type="text" name="ProductVersion" class="form-control autoc" id="endMatnr">
+                    </div>
+
+                    <div class="col-sm-1">
+                        <button type="button" style="margin-left:0px" id="btn_query" class="btn btn-primary">查询</button>
+                    </div>
+
+                </div>
+
+                <table id="tb_read"></table>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var oTable = new TableInit();
+        oTable.Init();
+    });
+    var TableInit = function () {
+        var oTableInit = new Object();
+        oTableInit.Init = function () {
+            $('#tb_read').bootstrapTable({
+                url: '/TendaOA_MFG/Setting_UnderOrder/GetUnderOrder', //请求后台的URL（*）
+                method: 'get', //请求方式（*）
+                toolbar: '#toolbar', //工具按钮用哪个容器
+                striped: true, //是否显示行间隔色
+                cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true, //是否显示分页（*）
+                sortable: false, //是否启用排序
+                sortOrder: "asc", //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1, //初始化加载第一页，默认第一页
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+                search: false,
+                strictSearch: true,
+                showColumns: false, //是否显示所有的列
+                showRefresh: false, //是否显示刷新按钮
+                minimumCountColumns: 2, //最少允许的列数
+                clickToSelect: true, //是否启用点击选中行
+                height: 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "id", //每一行的唯一标识，一般为主键列
+                showToggle: true, //是否显示详细视图和列表视图的切换按钮
+                cardView: false, //是否显示详细视图
+                showToggle: false,
+                detailView: false, //是否显示父子表
+                editable: true,
+                columns: [
+                    { checkbox: true },
+                    { field: 'MATNR', title: '辅料编码' },
+                    { field: 'MAKTX', title: '辅料描述' },
+                    {
+                        field: 'UnderOrderQuan', title: '下阶用量',
+                        editable: {
+                            type: 'text', title: '下阶用量', validate: function (v) {
+                                if (isNaN(v)) return '下阶用量必须是数字';
+                                var age = parseInt(v);
+                                if (age <= 0) return '下阶用量是正整数';
+                            }
+                        }
+                    },
+                    {
+                        field: 'MinUsage', title: '最小用量',
+                        editable: {
+                            type: 'text', title: '最小用量', validate: function (v) {
+                                if (isNaN(v)) return '最小用量必须是数字';
+                                var age = parseInt(v);
+                                if (age <= 0) return '最小用量是正整数';
+                            }
+                        }
+                    }
+                ],
+                //保存的使用
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.ajax({
+                        type: "post",
+                        url: '/TendaOA_MFG/Setting_UnderOrder/EditUnderOrder',
+                        data: row,
+                        dataType: 'JSON',
+                        success: function (data, status) {
+                            if (data.isOk == true && status == "success") {
+                                alert('修改成功');
+                            }
+                        },
+                        error: function () {
+                            alert('编辑失败');
+                        }
+                    });
+                }
+
+            });
+        };
+
+        //得到查询的参数
+        oTableInit.queryParams = function (params) {
+            var startMatnr = $("#startMatnr").val();
+            if (!Uitls.IsNullOrEmpty(startMatnr)) {
+                startMatnr = startMatnr.length == CONSTANT.MatnrLen ? startMatnr : Uitls.AddMatnrPreZero(startMatnr)
+            }
+            var endMatnr = $("#endMatnr").val();
+            if (!Uitls.IsNullOrEmpty(endMatnr)) {
+                endMatnr = endMatnr.length == CONSTANT.MatnrLen ? endMatnr : Uitls.AddMatnrPreZero(endMatnr)
+            }
+            var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit, //页面大小
+                offset: params.offset, //页码
+                startMatnr: startMatnr,
+                endMatnr: endMatnr,
+            };
+            return temp;
+        };
+        return oTableInit;
+    };
+</script>
