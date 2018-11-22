@@ -16,12 +16,12 @@ namespace RaeClass.Api
     public class ReadController : Controller
     {
 
-        private ILog log;
+        //private ILog log;
         private IReadRepository readRepository;
         public ReadController(IReadRepository _readRepository)
         {
             readRepository = _readRepository;
-            log = LogManager.GetLogger(Startup.logRepository.Name, typeof(ReadController));
+            //log = LogManager.GetLogger(Startup.logRepository.Name, typeof(ReadController));
         }
 
         [HttpGet]

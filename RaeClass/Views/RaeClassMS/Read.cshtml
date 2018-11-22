@@ -4,64 +4,8 @@
 }
 <div class="panel-body" style="padding-bottom:0px;">
     <div class="panel panel-default">
-        <div class="panel-heading" style="text-align:center"><h3>辅料下阶用量及最小用量维护</h3></div>
+        <div class="panel-heading" style="text-align:center"><h3>Read 文章管理中心</h3></div>
         <div class="panel-body">
-
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">请选择问题受理类型</h4>
-                        </div>
-
-                        <div class="modal-body">
-
-                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
-
-                                <label class="control-label col-sm-2">辅料编码<font class="red">*</font></label>
-                                <div class="col-sm-8">
-                                    <div class="has-feedback">
-                                        <input id="MATNR" removezero=true class="form-control" type="text" readonly />
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
-
-                                <label class="control-label col-sm-2">辅料描述<font class="red">*</font></label>
-                                <div class="col-sm-8">
-                                    <input id="MAKTX" required type="text" class="form-control">
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
-
-                                <label class="control-label col-sm-2">下阶用量<font class="red">*</font></label>
-                                <div class="col-sm-8">
-                                    <input id="UnderOrderQuan" required type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12" id="_MaterialReceRemark" style="padding-right:0px;margin-top:20px;">
-                                <label class="control-label col-sm-2">最小用量<font class="red">*</font></label>
-                                <div class="col-sm-8">
-                                    <input id="MinUsage" required type="text" class="form-control">
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button id="_addItem" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <form id="formSearch" class="form-horizontal">
 
@@ -88,14 +32,14 @@
                         <span class="glyphicon glyphicon-download" aria-hidden="true"></span>模版下载
                     </button>
 
-                    <label class="control-label col-sm-1" style="text-align:center" for="txt_search_barcodeinfo"><b>物料编码</b></label>
+                    <label class="control-label col-sm-1" style="text-align:center" for="txt_search_barcodeinfo"><b>文章名称</b></label>
                     <div class="col-sm-3">
-                        <input type="text" name="BarcodeInfo" class="form-control autoc" id="startMatnr">
+                        <input type="text" name="BarcodeInfo" class="form-control autoc" id="level">
                     </div>
 
                     <label class="control-label col-sm-1" style="text-align:center;width:25px" for="txt_search_productversion"><b>至</b></label>
                     <div class="col-sm-3">
-                        <input type="text" name="ProductVersion" class="form-control autoc" id="endMatnr">
+                        <input type="text" name="ProductVersion" class="form-control autoc" id="titleOrContent">
                     </div>
 
                     <div class="col-sm-1">
@@ -111,6 +55,7 @@
         </div>
     </div>
 </div>
+<!--初始Table Start-->
 <script>
     $(function () {
         var oTable = new TableInit();
@@ -147,51 +92,41 @@
                 detailView: false, //是否显示父子表
                 editable: true,
                 columns: [
-                    { checkbox: true },
-                    { field: 'MATNR', title: '辅料编码' },
-                    { field: 'MAKTX', title: '辅料描述' },
-                    {
-                        field: 'UnderOrderQuan', title: '下阶用量',
-                        editable: {
-                            type: 'text', title: '下阶用量', validate: function (v) {
-                                if (isNaN(v)) return '下阶用量必须是数字';
-                                var age = parseInt(v);
-                                if (age <= 0) return '下阶用量是正整数';
-                            }
-                        }
-                    },
-                    {
-                        field: 'MinUsage', title: '最小用量',
-                        editable: {
-                            type: 'text', title: '最小用量', validate: function (v) {
-                                if (isNaN(v)) return '最小用量必须是数字';
-                                var age = parseInt(v);
-                                if (age <= 0) return '最小用量是正整数';
-                            }
-                        }
-                    }
+                    { checkbox: false },
+                    { field: 'fnumber', title: '文章编号' },
+                    { field: 'fname', title: '文章名称' },
                 ],
             });
         };
-
-        //得到查询的参数
+        //初始查询参数
         oTableInit.queryParams = function (params) {
-            var startMatnr = $("#startMatnr").val();
-            if (!Uitls.IsNullOrEmpty(startMatnr)) {
-                startMatnr = startMatnr.length == CONSTANT.MatnrLen ? startMatnr : Uitls.AddMatnrPreZero(startMatnr)
-            }
-            var endMatnr = $("#endMatnr").val();
-            if (!Uitls.IsNullOrEmpty(endMatnr)) {
-                endMatnr = endMatnr.length == CONSTANT.MatnrLen ? endMatnr : Uitls.AddMatnrPreZero(endMatnr)
-            }
             var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-                limit: params.limit, //页面大小
-                offset: params.offset, //页码
-                startMatnr: startMatnr,
-                endMatnr: endMatnr,
+                pagesize: params.limit, //页面大小
+                pageindex: params.offset, //页码
+                level: "0",
+                titleOrContent: "",
             };
             return temp;
         };
         return oTableInit;
     };
 </script>
+<!--初始Table End-->
+<!--查询Table Start-->
+<script>
+    $("#btn_query").click(function () {
+        //点击查询是 使用刷新 处理刷新参数
+        var level = $("#level").val();
+        var titleOrContent = $("#titleOrContent").val();
+        var opt = {
+            url: "api/Read/GetReadList",
+            silent: true,
+            query: {
+                text1: startMatnr,
+                text2: endMatnr
+            }
+        };
+        $('#tb_read').bootstrapTable('refresh', opt);
+    });
+</script>
+<!--查询Table End-->
