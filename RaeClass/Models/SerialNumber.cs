@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace RaeClass.Models
 {
-    public class BaseContent
+    public class SerialNumber
     {
         [Key]
-        public int FId { set; get; }
-        public string FNumber { set; get; }
-        public string FJsonData { set; get; }
-        public DateTime FCreateTime { set; get; }
+        public int FID { set; get;}
+        public string FContentType { set; get; }
+        public int FCurrentGeneratedIndex { set; get; }
         public DateTime FModifyTime { set; get; }
     }
 }

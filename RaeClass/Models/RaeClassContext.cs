@@ -14,6 +14,7 @@ namespace RaeClass.Models
         {
         }
 
+        public DbSet<SerialNumber> SerialNumberSet { get; set; }
         public DbSet<ReadContent> ReadContentSet { get; set; }
         public DbSet<ListenContent> ListenContentSet { get; set; }
 
@@ -22,6 +23,7 @@ namespace RaeClass.Models
             //自定义表名
             modelBuilder.Entity<ReadContent>().ToTable("ReadContent", "dbo");
             modelBuilder.Entity<ListenContent>().ToTable("ListenContent", "dbo");
+            modelBuilder.Entity<SerialNumber>().ToTable("SerialNumber", "dbo");
 
             base.OnModelCreating(modelBuilder);
         }

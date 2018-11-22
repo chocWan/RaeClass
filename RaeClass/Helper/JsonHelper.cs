@@ -33,6 +33,17 @@ namespace RaeClass.Helper
             return jsonToken.ToString();
         }
 
+        public static List<TModel> ConvertToModelList<TModel>(List<string> jsonDataList) where TModel : class
+        {
+            List<TModel> res = new List<TModel>();
+            foreach (var jsonData in jsonDataList)
+            {
+                res.Add(JsonConvert.DeserializeObject<TModel>(jsonData));
+            }
+            
+            return res;
+        }
+
         public static TModel ConvertToModel<TModel>(string jsonData) where TModel : class
         {
             if (string.IsNullOrEmpty(jsonData))

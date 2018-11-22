@@ -8,9 +8,8 @@ namespace RaeClass.Repository
 {
     public interface IReadRepository
     {
-        Task AddAsync(ReadContent content);
-        Task UpdateAsync(ReadContent content);
-        Task<List<ReadContent>> ListAsync();
-        Tuple<List<ReadContent>, int> PageListAsync(int pageindex, int pagesize);
+        Task AddAsync(Read read);
+        Task UpdateAsync(Read read);
+        Tuple<List<ReadContent>, int> GetPageListAsync(int pageindex, int pagesize, string level, string titleOrContent);
     }
 }

@@ -120,7 +120,7 @@
         var oTableInit = new Object();
         oTableInit.Init = function () {
             $('#tb_read').bootstrapTable({
-                url: '/TendaOA_MFG/Setting_UnderOrder/GetUnderOrder', //请求后台的URL（*）
+                url: 'api/Read/GetReadList', //请求后台的URL（*）
                 method: 'get', //请求方式（*）
                 toolbar: '#toolbar', //工具按钮用哪个容器
                 striped: true, //是否显示行间隔色
@@ -171,24 +171,6 @@
                         }
                     }
                 ],
-                //保存的使用
-                onEditableSave: function (field, row, oldValue, $el) {
-                    $.ajax({
-                        type: "post",
-                        url: '/TendaOA_MFG/Setting_UnderOrder/EditUnderOrder',
-                        data: row,
-                        dataType: 'JSON',
-                        success: function (data, status) {
-                            if (data.isOk == true && status == "success") {
-                                alert('修改成功');
-                            }
-                        },
-                        error: function () {
-                            alert('编辑失败');
-                        }
-                    });
-                }
-
             });
         };
 

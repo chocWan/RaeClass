@@ -10,12 +10,6 @@ namespace RaeClass.Controllers
     public class RaeClassMSController : Controller
     {
 
-        private IReadRepository readRepository;
-        public RaeClassMSController(IReadRepository _readRepository)
-        {
-            readRepository = _readRepository;
-        }
-
         public IActionResult Index()
         {
             return View();
