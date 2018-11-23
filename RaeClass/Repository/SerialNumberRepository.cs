@@ -1,4 +1,5 @@
 ﻿using RaeClass.Config;
+using RaeClass.Helper;
 using RaeClass.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ namespace RaeClass.Repository
         public SerialNumberRepository(RaeClassContext _raeClassContext)
         {
             raeClassContext = _raeClassContext;
+        }
+
+        public string GetSerialNumber(RaeClassContentType contentType)
+        {
+            int maxIndex = GetMaxIndex(contentType) + 1;
+            return contentType.ToString() + CommonUtils.GetDateTimeNowSerial() +maxIndex.ToString();
         }
 
         public int GetMaxIndex(RaeClassContentType contentType)

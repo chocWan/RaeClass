@@ -10,5 +10,6 @@ namespace RaeClass.Repository
     {
         int GetMaxIndex(RaeClassContentType raeClassContentType);
         void UpdateMaxIndex(RaeClassContentType raeClassContentType,int gap);
+        string GetSerialNumber(RaeClassContentType contentType);
     }
 }

@@ -2,6 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RaeClass.Helper;
 using RaeClass.Models;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace UnitTestProject_Rae
 {
@@ -36,6 +38,28 @@ namespace UnitTestProject_Rae
 
         }
 
+        [TestMethod]
+        public void TestGetDateTimeSerial()
+        {
+            //日期流水：20180909
+            var dt = DateTime.Now;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(dt.Year.ToString());
+            sb.Append(dt.Month>10?dt.Month.ToString():"0" + dt.Month);
+            sb.Append(dt.Day>10?dt.Month.ToString():"0" + dt.Day);
+            byte[] randomBytes = new byte[4];
+            RNGCryptoServiceProvider rngServiceProvider = new RNGCryptoServiceProvider();
+            rngServiceProvider.GetBytes(randomBytes);
+            int result = BitConverter.ToInt32(randomBytes, 0);
+        }
+
+        [TestMethod]
+        public void TestGetDateTimeFormat()
+        {
+            //日期流水：20180909
+            var dt = DateTime.Now;
+            string str = dt.ToString("yyyy-MM-dd");
+        }
 
 
     }

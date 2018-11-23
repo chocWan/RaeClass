@@ -6,19 +6,24 @@ using RaeClass.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using RaeClass.Helper;
+using RaeClass.Config;
 
 namespace RaeClass.Repository
 {
     public class ReadRepository : IReadRepository
     {
+        public static RaeClassContentType raeClassContentType = RaeClassContentType.Read;
         private RaeClassContext context;
-        public ReadRepository(RaeClassContext _context)
+        private ISerialNumberRepository serialNumberRepository;
+        public ReadRepository(RaeClassContext _context, ISerialNumberRepository _serialNumberRepository)
         {
-            this.context = _context;
+            context = _context;
+            serialNumberRepository = _serialNumberRepository;
         }
 
-        public Task AddAsync(Read read)
+        public Task<int> AddAsync(string level,string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
         {
+            Read read = GetNewRead(level,name, cncontent, encontent, recordFileId1, recordFileId2);
             ReadContent content = GetReadContent(read);
             context.ReadContentSet.Add(content);
             return context.SaveChangesAsync();
@@ -50,9 +55,18 @@ namespace RaeClass.Repository
             return new Tuple<List<ReadContent>, int>(contents, pagecount);
         }
 
-        public Task UpdateAsync(Read read)
+        public Task UpdateAsync(string readNumber,string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
         {
-            var query = context.ReadContentSet.Where(x => x.FNumber.Equals(read.fnumber)).FirstOrDefault();
+            var read = GetRead(readNumber);
+            read.flevel = level;
+            read.fname = name;
+            read.fcnContent = cncontent;
+            read.fenContent = encontent;
+            read.frecordFileId1 = recordFileId1;
+            read.frecordFileId2 = recordFileId2;
+            read.fmodifyTime = DateTime.Now.ToString();
+            read.fmodifyBy = "Rae";
+            var query = context.ReadContentSet.Where(x => x.FNumber.Equals(readNumber)).FirstOrDefault();
             query.FJsonData = JsonHelper.SerializeObject(read);
             query.FModifyTime = DateTime.Now;
             return context.SaveChangesAsync();
@@ -67,6 +81,35 @@ namespace RaeClass.Repository
             readContent.FModifyTime = DateTime.Now;
             return readContent;
         }
+
+        public Read GetRead(string readNumber)
+        {
+            var query = context.ReadContentSet.Where(x=>x.FNumber.Equals(readNumber)).FirstOrDefault();
+            if (query != null) return JsonHelper.ConvertToModel<Read>(query.FJsonData);
+            else return null;
+        }
+
+        public Read GetNewRead(string level,string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
+        {
+            Read read = new Read();
+            read._id = string.Empty;
+            read._openid = Const.WX_OPENID;
+            read.flevel = level;
+            read.fnumber = serialNumberRepository.GetSerialNumber(raeClassContentType);
+            read.fname = name;
+            read.fcnContent = cncontent;
+            read.fenContent = encontent;
+            read.fcreateTime = DateTime.Now.ToString();
+            read.fcreateBy = "Rae";
+            read.fmodifyTime = DateTime.Now.ToString();
+            read.fmodifyBy = "Rae";
+            read.fdocStatus = "C";
+            read.frecordFileId1 = Const.WX_READ_RECORD_PREFIX + recordFileId1;
+            read.frecordFileId2 = Const.WX_READ_RECORD_PREFIX + recordFileId2;
+            return read;
+        }
+
+
 
     }
 }

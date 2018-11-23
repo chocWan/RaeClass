@@ -1,11 +1,17 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RaeClass;
 using RaeClass.Models;
 using RaeClass.Repository;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace UnitTestProject_Rae
 {
@@ -13,18 +19,26 @@ namespace UnitTestProject_Rae
     public class ReadRepositoryTest
     {
 
-        //private IReadRepository readRepository;
+        HttpClient client;
 
-        //public void Init()
-        //{
-        //    var server = new TestServer(WebHost.CreateDefaultBuilder().UseStartup<Startup>());
-        //    _service = server.Host.Services.GetService<UserService>();
-        //}
+        [TestInitialize]
+        public void Init()
+        {
+            var builder = new WebHostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseStartup<Startup>()
+                .UseEnvironment("Development");
+            var server = new TestServer(builder);
+            var client = server.CreateClient();
+            // client always expects json results
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
 
-        //[TestMethod]
-        //public void AddAsyncTest()
-        //{
-
-        //}
+        [TestMethod]
+        public async Task AddAsyncTest()
+        {
+            var response = await client.GetAsync($"api/Read/GetReadList");
+        }
     }
 }
