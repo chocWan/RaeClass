@@ -9,7 +9,7 @@ namespace RaeClass.Repository
     public interface ISerialNumberRepository
     {
         int GetMaxIndex(RaeClassContentType raeClassContentType);
-        void UpdateMaxIndex(RaeClassContentType raeClassContentType,int gap);
+        void UpdateMaxIndex(RaeClassContentType raeClassContentType,int gap = 1);
         string GetSerialNumber(RaeClassContentType contentType);
     }
 }

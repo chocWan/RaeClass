@@ -25,12 +25,11 @@ namespace UnitTestProject_Rae
         public void Init()
         {
             var builder = new WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Startup>()
-                .UseEnvironment("Development");
+                                                                    .UseContentRoot(Directory.GetCurrentDirectory())
+                                                                    .UseStartup<Startup>()
+                                                                    .UseEnvironment("Development");
             var server = new TestServer(builder);
             var client = server.CreateClient();
-            // client always expects json results
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }

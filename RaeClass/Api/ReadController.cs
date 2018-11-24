@@ -26,25 +26,23 @@ namespace RaeClass.Api
         }
 
         [HttpGet]
-        public JsonResult GetReadList(string level, string titleOrContent,int pageindex = 1,int pagesize = 10)
+        public JsonResult Get(string level, string titleOrContent,int pageindex = 1,int pagesize = 10)
         {
             try
             {
                 var res = readRepository.GetPageListAsync(pageindex, pagesize, level, titleOrContent);
-                int pagecount = res.Item2;
-                var jsonDataList = res.Item1.Select(x => x.FJsonData).ToList<string>();
-                var readList = JsonHelper.ConvertToModelList<Read>(jsonDataList);
-                return Json(new { readList = readList });
+                return Json(new { pagecount = res.Item2,reads = res.Item1 });
             }
             catch (Exception ex)
             {
                 log.Error(ex);
-                throw ex;
+                return null;
             }
             
         }
 
-        public async Task<JsonResult> AddRead(string level,string name,string cncontent,string encontent,string recordFileId1,string recordFileId2)
+        [HttpPut]
+        public async Task<JsonResult> Add(string level,string name,string cncontent,string encontent,string recordFileId1,string recordFileId2)
         {
             try
             {
@@ -59,11 +57,12 @@ namespace RaeClass.Api
             }
         }
 
-        public async Task<JsonResult> UpdateRead(string readNumber, string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
+        [HttpPost]
+        public async Task<JsonResult> Update(string readNumber, string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
         {
             try
             {
-                int res = await readRepository.AddAsync(level, name, cncontent, encontent, recordFileId1, recordFileId2);
+                int res = await readRepository.UpdateAsync(readNumber,level, name, cncontent, encontent, recordFileId1, recordFileId2);
                 if (res == 1) return Json(new { IsOk = true });
                 else return Json(new { IsOk = false });
             }

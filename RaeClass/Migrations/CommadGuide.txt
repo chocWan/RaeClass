@@ -1,7 +1,12 @@
-﻿1.dotnet ef migrations add  生成一条迁移
-
+﻿一 进入RaeClass项目根目录，打开CMD
+1.dotnet ef migrations add  生成一条迁移
 2.dotnet ef migrations remove  删除最新一次迁移
-
 3. dotnet ef  database  update 生成迁移到数据库，跟上面pmc命令类似 后面加指定的迁移作为参数可以进行版本的回滚
-
 4.dotnet ef migrations script   也跟pmc类似  如果没有任何参数的话默认是生成所有sql脚本，但是参数格式略有不同如下：dotnet ef migrations script migrationName1  migrationName2 ; 是像这样直接跟迁移名称的也就是生成migrationName1 到migrationName2 的sql脚本
+
+二 打开项目程序包管理器控制台
+1.add-migration [name]  生成一条迁移
+2.remove-migration  删除最新一次迁移
+3.update-database 生成迁移到数据库，跟上面pmc命令类似 后面加指定的迁移作为参数可以进行版本的回滚
+4.Script-Migration  这个命令用于生成迁移文件对应的sql语句的，跟之前的ef貌似有些不一样，该命令如果不加任何参数 是默认生成所有迁移文件对应的sql语句，当然也参照格式指定餐宿 Script-Migration -From migrationName1 -To migrationName2  -Context ContextName 有意思的是 ，它不会生成from对应的迁移文件的sql，也就是说想上面这么写只会生生成migrationName2的sql语句，那么问题来了 ，需要生成第一个迁移文件的sql怎么办？经过查看官方文档，需要指定from参数为0，也就是  Script-Migration -From 0
+

@@ -21,41 +21,54 @@ namespace RaeClass.Repository
             serialNumberRepository = _serialNumberRepository;
         }
 
-        public Task<int> AddAsync(string level,string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
+        public async Task<int> AddAsync(string level,string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
         {
             Read read = GetNewRead(level,name, cncontent, encontent, recordFileId1, recordFileId2);
             ReadContent content = GetReadContent(read);
             context.ReadContentSet.Add(content);
-            return context.SaveChangesAsync();
+            int res = await context.SaveChangesAsync();
+            if(res == 1) serialNumberRepository.UpdateMaxIndex(raeClassContentType);
+            return res;
         }
 
-        public Tuple<List<ReadContent>, int> GetPageListAsync(int pageindex, int pagesize,string level,string titleOrContent)
+        public Tuple<List<Read>, int> GetPageListAsync(int pageindex, int pagesize,string level,string titleOrContent)
         {
+            List<Read> reads = new List<Read>();
+            int pagecount = 0;
             StringBuilder sb = new StringBuilder();
-            sb.Append("select JsonData from ReadContent where 1=1");
             if (level.Trim() != "0")
             {
-                sb.AppendFormat(" and json_extract(JsonData,\"$.flevel\") = '{0}' ",level);
+                sb.AppendFormat(" and json_extract(FJsonData,\"$.flevel\") = '{0}' ",level);
             }
             if (!string.IsNullOrEmpty(titleOrContent))
             {
                 sb.Append(" and (");
-                sb.AppendFormat(" json_extract(JsonData,\"$.fname\") = '{0}' ", titleOrContent);
+                sb.AppendFormat(" json_extract(FJsonData,\"$.fname\") like '%{0}%' ", titleOrContent);
                 sb.Append(" or");
-                sb.AppendFormat(" json_extract(JsonData,\"$.fcnContent\") = '{0}' ", titleOrContent);
+                sb.AppendFormat(" json_extract(FJsonData,\"$.fcnContent\") = '%{0}%' ", titleOrContent);
                 sb.Append(" or");
-                sb.AppendFormat(" json_extract(JsonData,\"$.fenContent\") = '{0}' ", titleOrContent);
+                sb.AppendFormat(" json_extract(FJsonData,\"$.fenContent\") = '%{0}%' ", titleOrContent);
                 sb.Append(" )");
             }
-            int count = context.ReadContentSet.FromSql(sb.ToString()).Count();
-            sb.Append(" limit {0} offset {1}",pagesize,pageindex);
-            var contents = context.ReadContentSet.FromSql(sb.ToString()).ToList();
-            var pagecount = count % pagesize == 0 ? count / pagesize : count / pagesize + 1;
+            StringBuilder countSb = new StringBuilder();
+            countSb.Append("select FId from ReadContent where 1=1 ");
+            countSb.Append(sb.ToString());
+            int count = context.ReadContentSet.FromSql(countSb.ToString()).Count();
+            if (count >= 0)
+            {
+                StringBuilder contentSb = new StringBuilder();
+                contentSb.Append("select FJsonData from ReadContent where 1=1 ");
+                contentSb.Append(sb.ToString());
+                contentSb.Append(" limit {0} offset {1} ", pagesize, pageindex);
+                List<string> jsonDatas = context.Set<ReadContent>().Select(x=>x.FJsonData).FromSql(contentSb.ToString()).ToList();
+                reads = JsonHelper.ConvertToModelList<Read>(jsonDatas);
+                pagecount = count % pagesize == 0 ? count / pagesize : count / pagesize + 1;
+            }
             
-            return new Tuple<List<ReadContent>, int>(contents, pagecount);
+            return new Tuple<List<Read>, int>(reads, pagecount);
         }
 
-        public Task UpdateAsync(string readNumber,string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
+        public Task<int> UpdateAsync(string readNumber,string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
         {
             var read = GetRead(readNumber);
             read.flevel = level;
@@ -67,8 +80,13 @@ namespace RaeClass.Repository
             read.fmodifyTime = DateTime.Now.ToString();
             read.fmodifyBy = "Rae";
             var query = context.ReadContentSet.Where(x => x.FNumber.Equals(readNumber)).FirstOrDefault();
-            query.FJsonData = JsonHelper.SerializeObject(read);
-            query.FModifyTime = DateTime.Now;
+            if (query != null)
+            {
+                query.FName = read.fname;
+                query.FLevel = read.flevel;
+                query.FJsonData = JsonHelper.SerializeObject(read);
+                query.FModifyTime = DateTime.Now;
+            }
             return context.SaveChangesAsync();
         }
 
@@ -76,6 +94,8 @@ namespace RaeClass.Repository
         {
             ReadContent readContent = new ReadContent();
             readContent.FNumber = read.fnumber;
+            readContent.FName = read.fname;
+            readContent.FLevel = read.flevel;
             readContent.FJsonData = JsonHelper.SerializeObject(read);
             readContent.FCreateTime = DateTime.Now;
             readContent.FModifyTime = DateTime.Now;
@@ -108,8 +128,6 @@ namespace RaeClass.Repository
             read.frecordFileId2 = Const.WX_READ_RECORD_PREFIX + recordFileId2;
             return read;
         }
-
-
 
     }
 }

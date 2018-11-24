@@ -15,7 +15,7 @@ namespace RaeClass.Helper
             StringBuilder sb = new StringBuilder();
             sb.Append(dt.Year.ToString());
             sb.Append(dt.Month > 10 ? dt.Month.ToString() : "0" + dt.Month);
-            sb.Append(dt.Day > 10 ? dt.Month.ToString() : "0" + dt.Day);
+            sb.Append(dt.Day > 10 ? dt.Day.ToString() : "0" + dt.Day);
             return sb.ToString();
         }
     }

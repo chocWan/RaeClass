@@ -27,7 +27,7 @@ namespace RaeClass.Repository
             return raeClassContext.SerialNumberSet.Where(x=>x.FContentType.Equals(contentType.ToString())).FirstOrDefault().FCurrentGeneratedIndex;
         }
 
-        public void UpdateMaxIndex(RaeClassContentType contentType,int gap)
+        public void UpdateMaxIndex(RaeClassContentType contentType,int gap = 1)
         {
             var query = raeClassContext.SerialNumberSet.Where(x => x.FContentType.Equals(contentType.ToString())).FirstOrDefault();
             query.FCurrentGeneratedIndex += gap;

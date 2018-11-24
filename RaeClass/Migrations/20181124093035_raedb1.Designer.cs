@@ -9,8 +9,8 @@ using RaeClass.Models;
 namespace RaeClass.Migrations
 {
     [DbContext(typeof(RaeClassContext))]
-    [Migration("20181122141949_raedb5")]
-    partial class raedb5
+    [Migration("20181124093035_raedb1")]
+    partial class raedb1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,7 +27,11 @@ namespace RaeClass.Migrations
 
                     b.Property<string>("FJsonData");
 
+                    b.Property<string>("FLevel");
+
                     b.Property<DateTime>("FModifyTime");
+
+                    b.Property<string>("FName");
 
                     b.Property<string>("FNumber");
 
@@ -45,7 +49,11 @@ namespace RaeClass.Migrations
 
                     b.Property<string>("FJsonData");
 
+                    b.Property<string>("FLevel");
+
                     b.Property<DateTime>("FModifyTime");
+
+                    b.Property<string>("FName");
 
                     b.Property<string>("FNumber");
 

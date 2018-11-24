@@ -25,7 +25,11 @@ namespace RaeClass.Migrations
 
                     b.Property<string>("FJsonData");
 
+                    b.Property<string>("FLevel");
+
                     b.Property<DateTime>("FModifyTime");
+
+                    b.Property<string>("FName");
 
                     b.Property<string>("FNumber");
 
@@ -43,7 +47,11 @@ namespace RaeClass.Migrations
 
                     b.Property<string>("FJsonData");
 
+                    b.Property<string>("FLevel");
+
                     b.Property<DateTime>("FModifyTime");
+
+                    b.Property<string>("FName");
 
                     b.Property<string>("FNumber");
 
