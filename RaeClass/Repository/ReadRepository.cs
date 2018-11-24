@@ -59,13 +59,13 @@ namespace RaeClass.Repository
                 StringBuilder contentSb = new StringBuilder();
                 contentSb.Append("select FJsonData from ReadContent where 1=1 ");
                 contentSb.Append(sb.ToString());
-                contentSb.Append(" limit {0} offset {1} ", pagesize, pageindex);
+                contentSb.AppendFormat(" limit {0} offset {1} ", pagesize, pageindex);
                 List<string> jsonDatas = context.Set<ReadContent>().Select(x=>x.FJsonData).FromSql(contentSb.ToString()).ToList();
                 reads = JsonHelper.ConvertToModelList<Read>(jsonDatas);
                 pagecount = count % pagesize == 0 ? count / pagesize : count / pagesize + 1;
             }
             
-            return new Tuple<List<Read>, int>(reads, pagecount);
+            return new Tuple<List<Read>, int>(reads, count);
         }
 
         public Task<int> UpdateAsync(string readNumber,string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)

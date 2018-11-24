@@ -31,7 +31,7 @@ namespace RaeClass.Api
             try
             {
                 var res = readRepository.GetPageListAsync(pageindex, pagesize, level, titleOrContent);
-                return Json(new { pagecount = res.Item2,reads = res.Item1 });
+                return Json(new { total = res.Item2, rows = res.Item1 });
             }
             catch (Exception ex)
             {

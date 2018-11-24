@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "ReadDetail";
+    Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
+}
+
+<div>
+    <!-- 加载编辑器的容器 -->
+    <script id="container" name="content" type="text/plain">
+        这里写你的初始化内容
+    </script>
+</div>
+
+@section scripts{
+    <script src="~/lib/ueditor/ueditor.config.js"></script>
+    <script src="~/lib/ueditor/ueditor.all.js"></script>
+    <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        var ue = UE.getEditor('container');
+    </script>
+}
+

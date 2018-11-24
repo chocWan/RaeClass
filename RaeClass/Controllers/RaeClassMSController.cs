@@ -20,6 +20,11 @@ namespace RaeClass.Controllers
             return View();
         }
 
+        public IActionResult ReadDetail()
+        {
+            return View();
+        }
+
         public IActionResult Listen()
         {
             return View();
