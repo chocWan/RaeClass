@@ -141,7 +141,14 @@
     <!--Table事件注册 Start-->
     <script>
         $('#tb_read').on('dbl-click-row.bs.table', function (e, row, $element) {
-            var cncontent = row.fcncontent;
+            //删除checkbox 列
+            delete row[0];
+            //var read = null;
+            //$getJSONSync("http://localhost:49347/api/Read/GetEmptyRead", null, function (data) {
+            //    read = data.read;
+            // });
+            //$postJSONSync("ReadDetail", row);
+            window.location.href = "/RaeClassMS/ReadDetail?fnumber=" + row.fnumber;
         });
     </script>
     <!--Table事件注册 End-->

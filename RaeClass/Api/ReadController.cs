@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +40,20 @@ namespace RaeClass.Api
                 return null;
             }
             
+        }
+
+        [HttpGet("GetRead")]
+        public JsonResult GetRead(string fnumber)
+        {
+            Read read = readRepository.GetRead(fnumber);
+            read.fcnContent = Convert.ToBase64String(Encoding.UTF8.GetBytes(read.fcnContent));
+            return Json(new { read = read });
+        }
+
+        [HttpGet("GetEmptyRead")]
+        public JsonResult GetEmptyRead()
+        {
+            return Json(new { read = new Read() });
         }
 
         [HttpPut]

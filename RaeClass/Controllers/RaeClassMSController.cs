@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using RaeClass.Models;
 using RaeClass.Repository;
 
 namespace RaeClass.Controllers
@@ -20,8 +21,16 @@ namespace RaeClass.Controllers
             return View();
         }
 
-        public IActionResult ReadDetail()
+        /// <summary>
+        /// isModify=true 修改
+        /// isModify=false 新增
+        /// </summary>
+        /// <param name="read"></param>
+        /// <param name="isModify"></param>
+        /// <returns></returns>
+        public IActionResult ReadDetail(string fnumber)
         {
+            ViewData["fnumber"] = fnumber;
             return View();
         }
 

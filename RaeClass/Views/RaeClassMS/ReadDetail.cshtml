@@ -1,13 +1,12 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "ReadDetail";
     Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
 }
-
+@model RaeClass.Models.Read
 <div>
     <!-- 加载编辑器的容器 -->
-    <script id="container" name="content" type="text/plain">
-        这里写你的初始化内容
+    <script id="editor" name="content" type="text/plain">
+
     </script>
 </div>
 
@@ -15,9 +14,33 @@
     <script src="~/lib/ueditor/ueditor.config.js"></script>
     <script src="~/lib/ueditor/ueditor.all.js"></script>
     <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="~/lib/jquery-base64/jquery.base64.js"></script>
     <!-- 实例化编辑器 -->
     <script type="text/javascript">
-        var ue = UE.getEditor('container');
+        var read = null;
+        $(function () {
+            var fnumber = '@ViewData["fnumber"]';
+            var flag = isNullOrEmpty(fnumber);
+            var url = flag ? "http://localhost:49347/api/Read/GetEmptyRead" : "http://localhost:49347/api/Read/GetRead";
+            var data = flag ? null : { fnumber: fnumber };
+            $getJSONSync(url, {fnumber:fnumber}, function (data) {
+                read = data.read;
+            });
+            var ue = UE.getEditor('editor');
+            //异步回调
+            ue.ready(function () {
+                if (read != null) {
+                    ue.execCommand('insertHtml', $.base64.decode(read.fcnContent));
+                }
+            });
+        });
+    </script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        //var ue = UE.getEditor('container');
+        //if (read != null) { 
+        //    $("#container").val(read.fcnContent);
+        //}
     </script>
 }
 
