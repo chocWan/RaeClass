@@ -46,7 +46,6 @@ namespace RaeClass.Api
         public JsonResult GetRead(string fnumber)
         {
             Read read = readRepository.GetRead(fnumber);
-            read.fcnContent = Convert.ToBase64String(Encoding.UTF8.GetBytes(read.fcnContent));
             return Json(new { read = read });
         }
 

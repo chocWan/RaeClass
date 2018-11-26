@@ -3,20 +3,80 @@
     Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
 }
 @model RaeClass.Models.Read
-<div>
-    <!-- 加载编辑器的容器 -->
-    <script id="editor" name="content" type="text/plain">
-
-    </script>
+<div class="panel panel-default">
+    <div class="panel-heading" style="text-align: center; font-size: 22px !important;">
+        <h2 class="panel-title" style="text-align: center; font-size: 22px !important;">
+            <span style="font-size:22px !important;"></span>
+            <a data-toggle="collapse" href="#_formpanel">Read文章编辑</a>
+        </h2>
+    </div>
+    <!-- 基本信息 Start -->
+    <div class="panel" id="_unpayBaseInfo" title="基本信息">
+        <div class="panel-heading bg-primary">
+            <p class="panel-title">
+                <span class="panel-title">
+                    <b>基本信息</b>
+                </span>
+            </p>
+        </div>
+        <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in">
+            <div class="form-group">
+                <label class="control-label col-sm-1">编号</label>
+                <div class="col-sm-3" id="PaymentTime">
+                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                </div>
+                <label class="control-label col-sm-1">标题</label>
+                <div class="col-sm-4">
+                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                </div>
+                <label class="control-label col-sm-1">等级</label>
+                <div class="col-sm-2">
+                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                </div>
+            </div>
+        </div>
+        <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in">
+            <div class="form-group">
+                <label class="control-label col-sm-1">文章听力</label>
+                <div class="col-sm-3" id="PaymentTime">
+                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                </div>
+                <label class="control-label col-sm-1">讲解听力</label>
+                <div class="col-sm-4">
+                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                </div>
+                <label class="control-label col-sm-1">创建日期</label>
+                <div class="col-sm-2">
+                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 基本信息 End -->
+    <!-- 基本信息 Start -->
+    <div class="panel" id="_unpayBaseInfo" title="基本信息">
+        <div class="panel-heading bg-primary">
+            <p class="panel-title">
+                <span class="panel-title">
+                    <b>文章内容</b>
+                </span>
+            </p>
+        </div>
+        <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
+            <!-- 加载编辑器的容器 -->
+            <script id="editor" name="content" type="text/plain">
+            </script>
+        </div>
+    </div>
+    <!-- 基本信息 End -->
 </div>
 
-@section scripts{
-    <script src="~/lib/ueditor/ueditor.config.js"></script>
-    <script src="~/lib/ueditor/ueditor.all.js"></script>
-    <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
-    <script src="~/lib/jquery-base64/jquery.base64.js"></script>
-    <!-- 实例化编辑器 -->
-    <script type="text/javascript">
+    @section scripts{
+        <script src="~/lib/ueditor/ueditor.config.js"></script>
+        <script src="~/lib/ueditor/ueditor.all.js"></script>
+        <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+        <!-- 实例化编辑器 -->
+        <script type="text/javascript">
         var read = null;
         $(function () {
             var fnumber = '@ViewData["fnumber"]';
@@ -30,17 +90,17 @@
             //异步回调
             ue.ready(function () {
                 if (read != null) {
-                    ue.execCommand('insertHtml', $.base64.decode(read.fcnContent));
+                    ue.execCommand('insertHtml', read.fcnContent);
                 }
             });
         });
-    </script>
-    <!-- 实例化编辑器 -->
-    <script type="text/javascript">
-        //var ue = UE.getEditor('container');
-        //if (read != null) { 
-        //    $("#container").val(read.fcnContent);
-        //}
-    </script>
-}
+        </script>
+        <!-- 实例化编辑器 -->
+        <script type="text/javascript">
+                    //var ue = UE.getEditor('container');
+                    //if (read != null) {
+                    //    $("#container").val(read.fcnContent);
+                    //}
+        </script>
+    }
 
