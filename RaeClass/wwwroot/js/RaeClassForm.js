@@ -1,7 +1,6 @@
 ﻿/** Common Utilities **/
 
 function $postJSON(url, json, successCallback, failCallback) {
-    var requstUrl = url + window.location.search;
     $.ajax({
         url: requstUrl,
         type: 'POST',

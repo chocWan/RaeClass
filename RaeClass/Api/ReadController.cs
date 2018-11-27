@@ -55,7 +55,7 @@ namespace RaeClass.Api
             return Json(new { read = new Read() });
         }
 
-        [HttpPut]
+        [HttpPut("Add")]
         public async Task<JsonResult> Add(string level,string name,string cncontent,string encontent,string recordFileId1,string recordFileId2)
         {
             try
@@ -71,7 +71,7 @@ namespace RaeClass.Api
             }
         }
 
-        [HttpPost]
+        [HttpPost("Update")]
         public async Task<JsonResult> Update(string readNumber, string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
         {
             try

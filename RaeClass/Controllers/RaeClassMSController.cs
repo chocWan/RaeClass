@@ -30,6 +30,7 @@ namespace RaeClass.Controllers
         /// <returns></returns>
         public IActionResult ReadDetail(string fnumber)
         {
+            if (string.IsNullOrEmpty(fnumber)) fnumber = string.Empty;
             ViewData["fnumber"] = fnumber;
             return View();
         }

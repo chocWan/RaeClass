@@ -22,35 +22,40 @@
         <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in">
             <div class="form-group">
                 <label class="control-label col-sm-1">编号</label>
-                <div class="col-sm-3" id="PaymentTime">
-                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                <div class="col-sm-3">
+                    <input readonly type="text" class="form-control required" placeholder="系统自动生成" id="fnumber" name="fnumber" />
                 </div>
                 <label class="control-label col-sm-1">标题</label>
                 <div class="col-sm-4">
-                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                    <input type="text" class="form-control required" id="fname" name="fname" />
                 </div>
                 <label class="control-label col-sm-1">等级</label>
                 <div class="col-sm-2">
-                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                    <select required class="form-control" id="flevel" name="flevel">
+                        <option value="0"></option>
+                        <option value="1">初级</option>
+                        <option value="2">中级</option>
+                        <option value="3">高级</option>
+                    </select>
                 </div>
             </div>
         </div>
         <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in">
             <div class="form-group">
                 <label class="control-label col-sm-1">文章听力</label>
-                <div class="col-sm-3" id="PaymentTime">
-                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                <div class="col-sm-3">
+                    <input type="text" class="form-control required" id="frecordFileId1" name="frecordFileId1" />
                 </div>
                 <label class="control-label col-sm-1">讲解听力</label>
                 <div class="col-sm-4">
-                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                    <input type="text" class="form-control required" id="frecordFileId2" name="frecordFileId2" />
                 </div>
                 <label class="control-label col-sm-1">创建日期</label>
                 <div class="col-sm-2">
-                    <input readonly type="text" class="form-control required" name="AccountCurrency" />
+                    <input readonly type="text" class="form-control required" placeholder="系统自动生成" id="fcreateTime" name="fcreateTime" />
                 </div>
             </div>
-        </div>
+            </div>
     </div>
     <!-- 基本信息 End -->
     <!-- 基本信息 Start -->
@@ -64,43 +69,75 @@
         </div>
         <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
             <!-- 加载编辑器的容器 -->
-            <script id="editor" name="content" type="text/plain">
-            </script>
+            <script id="editor" name="content" type="text/plain"></script>
         </div>
     </div>
     <!-- 基本信息 End -->
 </div>
 
-    @section scripts{
-        <script src="~/lib/ueditor/ueditor.config.js"></script>
-        <script src="~/lib/ueditor/ueditor.all.js"></script>
-        <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
-        <!-- 实例化编辑器 -->
-        <script type="text/javascript">
+@section scripts{
+    <script src="~/lib/ueditor/ueditor.config.js"></script>
+    <script src="~/lib/ueditor/ueditor.all.js"></script>
+    <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <!-- 实例化编辑器 Start-->
+    <script type="text/javascript">
         var read = null;
+        var ue = UE.getEditor('editor');
         $(function () {
             var fnumber = '@ViewData["fnumber"]';
-            var flag = isNullOrEmpty(fnumber);
-            var url = flag ? "http://localhost:49347/api/Read/GetEmptyRead" : "http://localhost:49347/api/Read/GetRead";
-            var data = flag ? null : { fnumber: fnumber };
+            var isAddMode = isNullOrEmpty(fnumber);
+            var url = isAddMode ? "http://localhost:49347/api/Read/GetEmptyRead" : "http://localhost:49347/api/Read/GetRead";
+            var data = isAddMode ? null : { fnumber: fnumber };
             $getJSONSync(url, {fnumber:fnumber}, function (data) {
                 read = data.read;
             });
-            var ue = UE.getEditor('editor');
-            //异步回调
-            ue.ready(function () {
-                if (read != null) {
-                    ue.execCommand('insertHtml', read.fcnContent);
-                }
-            });
+            //修改模式
+            if (!isAddMode) {
+                initFormByReadData(read);
+                ue.ready(function () {
+                    if (read != null) {
+                        ue.execCommand('insertHtml', read.fcnContent);
+                    }
+                });
+            }
         });
-        </script>
-        <!-- 实例化编辑器 -->
-        <script type="text/javascript">
-                    //var ue = UE.getEditor('container');
-                    //if (read != null) {
-                    //    $("#container").val(read.fcnContent);
-                    //}
-        </script>
-    }
+    </script>
+    <!-- 实例化编辑器 End-->
+    <script type="text/javascript">
+        var initFormByReadData = function (read) {
+            $("#fnumber").val(read.fnumber);
+            $("#fname").val(read.fname);
+            $("#flevel").val(read.flevel);
+            $("#fcreateTime").val(read.fcreateTime);
+            $("#frecordFileId1").val(read.frecordFileId1);
+            $("#frecordFileId2").val(read.frecordFileId2);
+        };
+        var initReadDataByForm = function (read,ue) {
+            read.fname = $("#fname").val();
+            read.flevel = $("#flevel").val();
+            read.fcreateTime = $("#fcreateTime").val();
+            read.frecordFileId1 = $("#frecordFileId1").val();
+            read.frecordFileId2 = $("#frecordFileId2").val();
+            read.fcnContent = ue.getAllHtml();
+            read.fenContent = ue.getAllHtml();
+        };
+        var submitData = function (isAddMode, read) {
+            if (isAddMode) {
+                var url = "http://localhost:49347/api/Read/Add";
+                var data = { level: read.flevel, name: read.fname, cncontent: read.fcnContent, encontent: read.fenContent, recordFileId1: read.frecordFileId1, recordFileId2: read.frecordFileId2 };
+                $postJSON(url, data, function (data) {
+                    if (data.IsOk) { alert("ok"); }
+                    else { alert("error"); }
+                });
+            } else {
+                var url = "http://localhost:49347/api/Read/Update";
+                var data = { readNumber: fnumber, level: read.flevel, name: read.fname, cncontent: read.fcnContent, encontent: read.fenContent, recordFileId1: read.frecordFileId1, recordFileId2: read.frecordFileId2 };
+                $postJSON(url, data, function (data) {
+                    if (data.IsOk) { alert("ok"); }
+                    else { alert("error"); }
+                });
+            }
+        };
+    </script>
+}
 
