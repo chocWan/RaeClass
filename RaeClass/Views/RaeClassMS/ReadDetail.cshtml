@@ -3,11 +3,14 @@
     Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
 }
 @model RaeClass.Models.Read
+<link href="~/lib/jquery-float/floating.css" rel="stylesheet" />
+<link href="~/lib/jquery-float/iconfont.css" rel="stylesheet" />
+
 <div class="panel panel-default">
     <div class="panel-heading" style="text-align: center; font-size: 22px !important;">
         <h2 class="panel-title" style="text-align: center; font-size: 22px !important;">
             <span style="font-size:22px !important;"></span>
-            <a data-toggle="collapse" href="#_formpanel">Read文章编辑</a>
+            Read文章编辑
         </h2>
     </div>
     <!-- 基本信息 Start -->
@@ -55,7 +58,7 @@
                     <input readonly type="text" class="form-control required" placeholder="系统自动生成" id="fcreateTime" name="fcreateTime" />
                 </div>
             </div>
-            </div>
+        </div>
     </div>
     <!-- 基本信息 End -->
     <!-- 基本信息 Start -->
@@ -69,7 +72,8 @@
         </div>
         <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
             <!-- 加载编辑器的容器 -->
-            <script id="editor" name="content" type="text/plain"></script>
+            <script id="editor" name="content" type="text/plain">
+            </script>
         </div>
     </div>
     <!-- 基本信息 End -->
@@ -79,6 +83,8 @@
     <script src="~/lib/ueditor/ueditor.config.js"></script>
     <script src="~/lib/ueditor/ueditor.all.js"></script>
     <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="~/lib/jquery-float/floating.js"></script>
+
     <!-- 实例化编辑器 Start-->
     <script type="text/javascript">
         var read = null;
@@ -112,7 +118,7 @@
             $("#frecordFileId1").val(read.frecordFileId1);
             $("#frecordFileId2").val(read.frecordFileId2);
         };
-        var initReadDataByForm = function (read,ue) {
+        var initReadDataByForm = function (read, ue) {
             read.fname = $("#fname").val();
             read.flevel = $("#flevel").val();
             read.fcreateTime = $("#fcreateTime").val();
@@ -138,6 +144,25 @@
                 });
             }
         };
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("body").floating(
+                {
+                    "theme": "panel_theme_round_solid", "state": true, "moveState": true, "size": "auto", "position": "left-center", "tip": { "background-color": "#000", "color": "#fff" },
+                    "account": [
+                        { "type": "Save", "tip": "Save", "text": "", "url": "" }
+                        , { "type": "Delete", "tip": "Delete", "text": "", "url": "" }
+                        , { "type": "Freeze", "tip": "Freeze", "text": "", "url": "" }
+                        , { "type": "UnFreeze", "tip": "UnFreeze", "text": "", "url": "" }
+                        , { "type": "Submit", "tip": "Submit", "text": "", "url": "" }
+                        , { "type": "Import", "tip": "Import", "text": "", "url": "" }
+                        , { "type": "Export", "tip": "Export", "text": "", "url": "" }
+                        , { "type": "GoTop", "tip": "Back top" }
+                    ]
+                }
+            );
+        })
     </script>
 }
 

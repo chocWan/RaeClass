@@ -18,6 +18,7 @@
     "RaeClass": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:49347/RaeClassMS/Read",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

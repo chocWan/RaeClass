@@ -1,0 +1,12 @@
+﻿.panel-heading {
+    padding-top:5px;
+    padding-bottom:5px;
+}
+label.control-label {
+    padding-top: 8px;
+    font-size: 14px;
+    text-align:right;
+}
+body {
+background:#f5f5f5;
+}
