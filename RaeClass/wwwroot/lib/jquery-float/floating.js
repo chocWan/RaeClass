@@ -41,6 +41,7 @@
                             $li_html.append('<div class="tooltip parts-li-tip"><div class="tooltip-inner">' + url + '</div></div>')
                         }
                         $li_html.attr("data-type", obj.type);
+                        $li_html.attr("id", obj.type);
                         if (obj.type == "GoTop") {
                             $li_html.click(function() {
                                 $('body,html,nav.top_nav ~ .section').animate({

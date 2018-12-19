@@ -2,11 +2,10 @@
 
 function $postJSON(url, json, successCallback, failCallback) {
     $.ajax({
-        url: requstUrl,
+        url: url,
         type: 'POST',
-        data: { jsonData: json },
+        data: json,
         dataType: 'json',
-        contentType: 'application/json; charset=UTF-8'
     }).done(successCallback).fail(failCallback);
 }
 
@@ -112,6 +111,9 @@ function isNullOrEmpty() {
     return flag;
 }
 
+function Save() {
+    
+}
 
 UEditorUtils = {
     isFocus: function (e) {

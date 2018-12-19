@@ -39,7 +39,6 @@ namespace RaeClass.Api
                 log.Error(ex);
                 return null;
             }
-            
         }
 
         [HttpGet("GetRead")]
@@ -79,6 +78,20 @@ namespace RaeClass.Api
                 int res = await readRepository.UpdateAsync(readNumber,level, name, cncontent, encontent, recordFileId1, recordFileId2);
                 if (res == 1) return Json(new { IsOk = true });
                 else return Json(new { IsOk = false });
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                throw ex;
+            }
+        }
+
+        [HttpPost("Update2")]
+        public JsonResult Update2(string readNumber)
+        {
+            try
+            {
+                return Json(new { IsOk = false });
             }
             catch (Exception ex)
             {
