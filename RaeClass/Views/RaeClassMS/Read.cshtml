@@ -2,62 +2,23 @@
     ViewData["Title"] = "Read";
     Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
 }
+<link href="~/lib/jquery-float/floating.css" rel="stylesheet" />
+<link href="~/lib/jquery-float/iconfont.css" rel="stylesheet" />
+
 <div class="panel-body" style="padding-bottom:0px;">
     <div class="panel panel-default">
         <div class="panel-heading" style="text-align:center"><h3>Read 文章管理中心</h3></div>
         <div class="panel-body">
 
             <form id="formSearch" class="form-horizontal">
-
-                <div id="toolbar" style="margin-bottom:5px;width:960px" class="btn-group">
-                    <button id="btn_add" type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
-                    </button>
-                    <button id="btn_delete" type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
-                    </button>
-
-                    @*<div class="col-sm-2" style="width:73px;padding:0px;">
-                            <span id="import" class="input-group-btn" style="float:right;width: 72px;">
-                                <input id="ImportFile" type="file" style="width: 72px;height: 35px;z-index:2;right: 0px;top:0px;position: absolute;opacity:0;left: 0px;cursor:pointer">
-                                <span class="btn btn-default" style="z-index:1;" title="导入">
-                                    <span class="glyphicon glyphicon-upload"></span>
-                                    导入
-                                </span>
-                            </span>
-                        </div>*@
-
-                    <button id="btn_exportContent" type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>导出
-                    </button>
-
-                    <div class="col-sm-2" style="padding-left:0px;">
-                        <select required class="form-control" id="level">
-                            <option value="0"></option>
-                            <option value="1">初级</option>
-                            <option value="2">中级</option>
-                            <option value="3">高级</option>
-                        </select>
-                    </div>
-
-                    <div class="col-sm-6" style="padding-left:0px;">
-                        <input type="text" name="BarcodeInfo" class="form-control autoc">
-                    </div>
-
-                    <div class="col-sm-1">
-                        <button type="button" style="margin-left:0px" id="btn_query" class="btn btn-primary">查询</button>
-                    </div>
-
-                </div>
-
                 <table id="tb_read"></table>
-
             </form>
 
         </div>
     </div>
 </div>
 @section scripts{
+    <script src="~/lib/jquery-float/floating.js"></script>
     <!--初始Table Start-->
     <script>
         $(function () {
@@ -120,36 +81,14 @@
         $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
     </script>
     <!--初始Table End-->
-    <!--查询Table Start-->
-    <script>
-        $("#btn_query").click(function () {
-            //点击查询是 使用刷新 处理刷新参数
-            var level = $("#level").val();
-            var titleOrContent = $("#titleOrContent").val();
-            var opt = {
-                url: "http://localhost:49347/api/Read/",
-                silent: true,
-                query: {
-                    level: level,
-                    titleOrContent: titleOrContent
-                }
-            };
-            $('#tb_read').bootstrapTable('refresh', opt);
-        });
-    </script>
-    <!--查询Table End-->
     <!--Table事件注册 Start-->
     <script>
         $('#tb_read').on('dbl-click-row.bs.table', function (e, row, $element) {
             //删除checkbox 列
             delete row[0];
-            //var read = null;
-            //$getJSONSync("http://localhost:49347/api/Read/GetEmptyRead", null, function (data) {
-            //    read = data.read;
-            // });
-            //$postJSONSync("ReadDetail", row);
             window.location.href = "/RaeClassMS/ReadDetail?fnumber=" + row.fnumber;
         });
+        $("#Save").bind("click", function () { alert();});
     </script>
     <!--Table事件注册 End-->
 }

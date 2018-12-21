@@ -65,7 +65,7 @@
             initialize = $.extend(initialize, method);
             return methods.init.apply(this, initialize);
         }
-    }
-    ;
+    };
 }
 )(jQuery);
+

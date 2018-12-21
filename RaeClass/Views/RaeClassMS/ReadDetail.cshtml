@@ -85,24 +85,25 @@
     <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
     <script src="~/lib/jquery-float/floating.js"></script>
     <script>
-        $(document).ready(function () {
-            $("body").floating(
-                {
-                    "theme": "panel_theme_round_solid", "state": true, "moveState": true, "size": "auto", "position": "left-center", "tip": { "background-color": "#000", "color": "#fff" },
-                    "account": [
-                        { "type": "Save", "tip": "Save", "text": "", "url": "" }
-                        , { "type": "Delete", "tip": "Delete", "text": "", "url": "" }
-                        , { "type": "Freeze", "tip": "Freeze", "text": "", "url": "" }
-                        , { "type": "UnFreeze", "tip": "UnFreeze", "text": "", "url": "" }
-                        , { "type": "Submit", "tip": "Submit", "text": "", "url": "" }
-                        , { "type": "Import", "tip": "Import", "text": "", "url": "" }
-                        , { "type": "Export", "tip": "Export", "text": "", "url": "" }
-                        , { "type": "GoTop", "tip": "Back top" }
-                    ]
-                }
-            );
-            $("#Save").bind("click",save);
-        });        
+        //$(document).ready(function () {
+        //    $("body").floating(
+        //        {
+        //            "theme": "panel_theme_round_solid", "state": true, "moveState": true, "size": "auto", "position": "left-center", "tip": { "background-color": "#000", "color": "#fff" },
+        //            "account": [
+        //                { "type": "Save", "tip": "Save", "text": "", "url": "" }
+        //                , { "type": "Delete", "tip": "Delete", "text": "", "url": "" }
+        //                , { "type": "Freeze", "tip": "Freeze", "text": "", "url": "" }
+        //                , { "type": "UnFreeze", "tip": "UnFreeze", "text": "", "url": "" }
+        //                , { "type": "Submit", "tip": "Submit", "text": "", "url": "" }
+        //                , { "type": "Import", "tip": "Import", "text": "", "url": "" }
+        //                , { "type": "Export", "tip": "Export", "text": "", "url": "" }
+        //                , { "type": "GoTop", "tip": "Back top" }
+        //            ]
+        //        }
+        //    );
+        //    $("#Save").bind("click", save);
+        //    $("#Export").bind("click", downLoadReadJson);
+        //});
     </script>
     <!-- 实例化编辑器 Start-->
     <script type="text/javascript">
@@ -176,8 +177,10 @@
             });
         };
 
+        var downLoadReadJson = function () {
+            window.location.href = "http://localhost:49347/api/Read/DownLoadReadJson?readNumber=" + read.fnumber;
+        };
 
-
-    </script>    
-    }
+    </script>
+}
 

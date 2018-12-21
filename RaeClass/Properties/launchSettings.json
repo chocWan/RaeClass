@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:49348/",
+      "applicationUrl": "http://localhost:49347/",
       "sslPort": 0
     }
   },
@@ -11,6 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:49347/RaeClassMS/ReadDetail?fnumber=Read201811240010",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -18,7 +19,7 @@
     "RaeClass": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:49347/RaeClassMS/Read",
+      "launchUrl": "http://localhost:49347/RaeClassMS/ReadDetail?fnumber=Read201811240010",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

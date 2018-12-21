@@ -111,9 +111,77 @@ function isNullOrEmpty() {
     return flag;
 }
 
-function Save() {
-    
-}
+ToolName = {
+    Save:"Save",
+    Delete:"Delete",
+    Freeze:"Freeze",
+    UnFreeze:"UnFreeze",
+    Submit:"Submit",
+    Import:"Import",
+    Export:"Export",
+    GoTop:"GoTop",
+};
+
+RaeClassForm = {
+    FormContent: {},
+    /* ToolButtons */
+    $formSaveButton: $('#' + ToolName.Save),
+    $formDeleteButton: $('#' + ToolName.Delete),
+    $formFreezeButton: $('#' + ToolName.Freeze),
+    $formUnFreezeButton: $('#' + ToolName.UnFreeze),
+    $formSubmitButton: $('#' + ToolName.Submit),
+    $formImportButton: $('#' + ToolName.Import),
+    $formExportButton: $('#' + ToolName.Export),
+    $formGoTopButton: $('#' + ToolName.GoTop),
+    /* ToolButtonsEvent */
+    formSave: function () {
+        var read = getReadDataByForm();
+        var url = "http://localhost:49347/api/Read/Update";
+        var data = { fnumber: read.fnumber, level: read.flevel, name: read.fname, cncontent: read.fcnContent, encontent: read.fenContent, recordFileId1: read.frecordFileId1, recordFileId2: read.frecordFileId2 };
+        $postJSON(url, data, function (data) {
+            if (data.isOk) { alert("ok"); }
+            else { alert("error"); }
+        });
+    },
+    var getReadDataByForm = function () {
+        read.fname = $("#fname").val();
+        read.flevel = $("#flevel").val();
+        read.fcreateTime = $("#fcreateTime").val();
+        read.frecordFileId1 = $("#frecordFileId1").val();
+        read.frecordFileId2 = $("#frecordFileId2").val();
+        read.fcnContent = ue.getAllHtml();
+        read.fenContent = ue.getAllHtml();
+        return read;
+    };
+
+
+    AddFloatingTool: function (toolArr) {
+        var account = [];
+        if (toolArr) {
+            $.each(toolArr, function(index,item){
+                account.push({ "type": item, "tip": item, "text": "", "url": "" });
+            });
+        } else {
+            account.push({ "type": ToolName.Save, "tip": ToolName.Save, "text": "", "url": "" });
+            account.push({ "type": ToolName.Delete, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.Freeze, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.UnFreeze, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.Submit, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.Export, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.Import, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.GoTop, "tip": ToolName.Delete, "text": "", "url": "" });
+        }
+        $("body").floating(
+            {
+                "theme": "panel_theme_round_solid", "state": true, "moveState": true, "size": "auto", "position": "left-center", "tip": { "background-color": "#000", "color": "#fff" },"account": account
+            }
+        );
+    },
+    BindToolEvent: function () {
+        $("#Save").bind("click", save);
+        $("#Export").bind("click", downLoadReadJson);
+    },
+};
 
 UEditorUtils = {
     isFocus: function (e) {

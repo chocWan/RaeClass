@@ -9,6 +9,8 @@ namespace RaeClass.Config
     {
         Read = 1,
         Listen = 2,
+        Spoken = 3,
+        Tech = 4
     }
 
     public static class Const

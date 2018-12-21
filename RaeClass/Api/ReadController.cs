@@ -86,18 +86,13 @@ namespace RaeClass.Api
             }
         }
 
-        [HttpPost("Update2")]
-        public JsonResult Update2(string readNumber)
+        [HttpGet("DownLoadReadJson")]
+        public FileResult DownLoadReadJson(string readNumber)
         {
-            try
-            {
-                return Json(new { IsOk = false });
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex);
-                throw ex;
-            }
+            Read read = readRepository.GetRead(readNumber);
+            string readJson = JsonHelper.SerializeObject(read);
+            byte[] fileContents = System.Text.Encoding.Default.GetBytes(readJson);
+            return File(fileContents, System.Net.Mime.MediaTypeNames.Application.Octet, "read.json"); //关键语句
         }
 
     }
