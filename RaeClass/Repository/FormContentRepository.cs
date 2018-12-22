@@ -108,7 +108,7 @@ namespace RaeClass.Repository
             StringBuilder countSb = new StringBuilder();
             countSb.Append("select FId from BaseFormContent where 1=1 ");
             countSb.Append(sb.ToString());
-            int count = context.ReadContentSet.FromSql(countSb.ToString()).Count();
+            int count = context.BaseFormContentSet.FromSql(countSb.ToString()).Count();
             if (count >= 0)
             {
                 StringBuilder contentSb = new StringBuilder();

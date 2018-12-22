@@ -44,23 +44,10 @@ namespace RaeClass.Controllers
             return RedirectToAction("FormContentDetail");
         }
 
-        /// <summary>
-        /// isModify=true 修改
-        /// isModify=false 新增
-        /// </summary>
-        /// <param name="read"></param>
-        /// <param name="isModify"></param>
-        /// <returns></returns>
-        public IActionResult ReadDetail(string fnumber)
-        {
-            if (string.IsNullOrEmpty(fnumber)) fnumber = string.Empty;
-            ViewData["fnumber"] = fnumber;
-            return View();
-        }
-
         public IActionResult Listen()
         {
-            return View();
+            this.TempData["contentType"] = RaeClassContentType.Listen.ToString();
+            return RedirectToAction("FormContentDetail");
         }
 
     }
