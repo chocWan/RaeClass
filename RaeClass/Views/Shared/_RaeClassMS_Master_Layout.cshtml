@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-treeview.css" />
         <link href="~/css/RaeClassForm.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.css" />
-    </environment>    
+    </environment>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -47,9 +47,15 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap-table.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap-treeview.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap-table-locale-all.min.js"></script>
+        <script src="~/lib/jquery-float/floating.js"></script>
         <script src="~/js/RaeClassForm.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment> 
+    </environment>
+    <script type="text/javascript">
+        $(function () {
+            RaeClassForm.init();
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

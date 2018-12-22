@@ -31,7 +31,23 @@ namespace RaeClass.Repository
             return res;
         }
 
+        public async Task<int> AddListAsync(RaeClassContentType contentType, List<FormContent> formContents)
+        {
+            FillFormContents(contentType, ref formContents);
+            List<BaseFormContent> baseFormContents = GetBaseFormContents(contentType, formContents);
+            await context.BaseFormContentSet.AddRangeAsync(baseFormContents);
+            int res = await context.SaveChangesAsync();
+            if (res == 1) serialNumberRepository.UpdateMaxIndex(contentType);
+            return res;
+        }
+
         public Task<int> UpdateAsync(FormContent formContent)
+        {
+            UpdateBaseFormContent(formContent);
+            return context.SaveChangesAsync();
+        }
+
+        private void UpdateBaseFormContent(FormContent formContent)
         {
             formContent.fmodifyTime = DateTime.Now.ToString();
             formContent.fmodifyBy = CONST.CREATOR;
@@ -43,26 +59,27 @@ namespace RaeClass.Repository
                 query.FJsonData = JsonHelper.SerializeObject(formContent);
                 query.FModifyTime = DateTime.Now;
             }
-            return context.SaveChangesAsync();
         }
 
         public Task<int> UpdateListAsync(List<FormContent> formContents)
         {
-            foreach (var formContent in formContents)
-            {
-                formContent.fmodifyTime = DateTime.Now.ToString();
-                formContent.fmodifyBy = CONST.CREATOR;
-                var query = context.BaseFormContentSet.Where(x => x.FNumber.Equals(formContent.fnumber)).FirstOrDefault();
-                if (query != null)
-                {
-                    query.FName = formContent.fname;
-                    query.FLevel = formContent.flevel;
-                    query.FJsonData = JsonHelper.SerializeObject(formContent);
-                    query.FModifyTime = DateTime.Now;
-                }
-            }
-            
+            formContents.ForEach(item=>UpdateBaseFormContent(item));
             return context.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateDocStatusListAsync(List<string> fnumbers,string docStatus)
+        {
+            await context.BaseFormContentSet
+                .Where(x => fnumbers.Contains(x.FNumber) && x.FDocStatus.Equals(DocStatus.SAVE))
+                .ForEachAsync( item=> {
+                    var formContent = GetFormContent(item.FNumber);
+                    formContent.fmodifyTime = DateTime.Now.ToString();
+                    formContent.fmodifyBy = CONST.CREATOR;
+                    item.FJsonData = JsonHelper.SerializeObject(formContent);
+                    item.FModifyTime = DateTime.Now;
+                });
+
+            return await context.SaveChangesAsync();
         }
 
         public Tuple<List<FormContent>, int> GetPageListAsync(RaeClassContentType contentType, string level, string titleOrContent, int pageindex, int pagesize)
@@ -113,6 +130,13 @@ namespace RaeClass.Repository
             else return null;
         }
 
+        public FormContent GetFormContent(string fnumber)
+        {
+            var query = context.BaseFormContentSet.Where(x => x.FNumber.Equals(fnumber)).FirstOrDefault();
+            if (query != null) return JsonHelper.ConvertToModel<FormContent>(query.FJsonData);
+            else return null;
+        }
+
         public async Task<List<FormContent>> GetFormContentListAsync(List<string> fnumbers)
         {
             var query = await context.BaseFormContentSet.Where(x => fnumbers.Contains(x.FNumber)).ToListAsync();
@@ -125,7 +149,7 @@ namespace RaeClass.Repository
             return new FormContent(); 
         }
 
-        public BaseFormContent GetBaseFormContent(RaeClassContentType contentType, FormContent formContent)
+        private BaseFormContent GetBaseFormContent(RaeClassContentType contentType, FormContent formContent)
         {
             BaseFormContent baseFormContent = new BaseFormContent();
             baseFormContent.FContentType = contentType.ToString();
@@ -139,7 +163,14 @@ namespace RaeClass.Repository
             return baseFormContent;
         }
 
-        public FormContent FillFormContent(RaeClassContentType contentType,ref FormContent formContent)
+        private List<BaseFormContent> GetBaseFormContents(RaeClassContentType contentType, List<FormContent> formContents)
+        {
+            List<BaseFormContent> baseFormContents = new List<BaseFormContent>();
+            formContents.ForEach(item=> baseFormContents.Add(GetBaseFormContent(contentType,item)));
+            return baseFormContents;
+        }
+
+        private void FillFormContent(RaeClassContentType contentType,ref FormContent formContent)
         {
             formContent._id = string.Empty;
             formContent._openid = CONST.WX_OPENID;
@@ -148,10 +179,13 @@ namespace RaeClass.Repository
             formContent.fcreateBy = CONST.CREATOR;
             formContent.fmodifyTime = DateTime.Now.ToString();
             formContent.fmodifyBy = CONST.CREATOR;
-            formContent.fdocStatus = DocStatus.SAVE;
             formContent.frecordFileId1 = CommonUtils.GetRecordFilePrefix(contentType) + formContent.frecordFileId1;
             formContent.frecordFileId2 = CommonUtils.GetRecordFilePrefix(contentType) + formContent.frecordFileId2;
-            return formContent;
+        }
+
+        private void FillFormContents(RaeClassContentType contentType, ref List<FormContent> formContents)
+        {
+            formContents.ForEach(item => FillFormContent(contentType,ref item));
         }
 
     }

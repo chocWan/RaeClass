@@ -18,7 +18,11 @@
     </div>
 </div>
 @section scripts{
-    <script src="~/lib/jquery-float/floating.js"></script>
+    <!-- RaeClass Override Start-->
+    <script>
+        RaeClassForm.IsListMode = true;
+    </script>
+    <!-- RaeClass Override End-->
     <!--初始Table Start-->
     <script>
         $(function () {
@@ -89,7 +93,7 @@
             delete row[0];
             window.location.href = "/RaeClassMS/FormContentDetail?fnumber=" + row.fnumber;
         });
-        $("#Save").bind("click", function () { alert();});
+        $("#Save").bind("click", function () { alert(); });
     </script>
     <!--Table事件注册 End-->
 }

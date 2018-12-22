@@ -53,38 +53,46 @@ namespace RaeClass.Api
             return Json(new { content = formContentRepository.GetEmptyFormContent() });
         }
 
-        [HttpPut("Add")]
-        public async Task<JsonResult> Add(RaeClassContentType contentType, FormContent formContent)
+        [HttpPost("Save")]
+        public async Task<JsonResult> Save(RaeClassContentType contentType, FormContent formContent)
         {
-            try
+            if (!string.IsNullOrEmpty(formContent.fnumber))
             {
-                int res = await formContentRepository.AddAsync(contentType,formContent);
+                int res = await formContentRepository.AddAsync(contentType, formContent);
                 if (res == 1) return Json(new { IsOk = true });
                 else return Json(new { IsOk = false });
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        [HttpPost("Update")]
-        public async Task<JsonResult> Update(FormContent formContent)
-        {
-            try
-            {
+            else {
+                if (!formContent.fdocStatus.Equals(DocStatus.SAVE))
+                {
+                    throw new Exception("can not save!");
+                }
                 int res = await formContentRepository.UpdateAsync(formContent);
                 if (res == 1) return Json(new { IsOk = true });
                 else return Json(new { IsOk = false });
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+        }
+
+        [HttpPost("Submit")]
+        public async Task<JsonResult> Submit(RaeClassContentType contentType, List<FormContent> formContents)
+        {
+            formContents.ForEach(item=>item.fdocStatus = DocStatus.SUBMIT);
+            int querySaveStatusCount = formContents.Where(x => string.IsNullOrEmpty(x.fnumber)).Count();
+            if (querySaveStatusCount > 0) throw new Exception("there are doc being save status,please save first!");
+            var querySubmit = formContents.Where(x => string.IsNullOrEmpty(x.fnumber));
+            int submitCount = await formContentRepository.UpdateListAsync(formContents);
+            return Json(new { IsOk = true });
+        }
+
+        [HttpPost("Submit")]
+        public async Task<JsonResult> Submit(List<string> formContents)
+        {
+            int submitCount = await formContentRepository.UpdateDocStatusListAsync(formContents,DocStatus.SUBMIT);
+            return Json(new { IsOk = true });
         }
 
         [HttpGet("DownLoadJsonFile")]
-        public async Task<FileResult> DownLoadJsonFileAsync(List<string> fnumbers)
+        public async Task<FileResult> DownLoadJsonFile(List<string> fnumbers)
         {
             List<FormContent> formContens= await formContentRepository.GetFormContentListAsync(fnumbers);
             string json = JsonHelper.SerializeObject(formContens);

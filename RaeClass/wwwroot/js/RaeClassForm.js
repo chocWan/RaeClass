@@ -136,10 +136,41 @@ UrlHelper = {
 }
 
 RaeClassForm = {
+    formContent: {},
+    IsListMode:false,
+    $_ueditor_cn: UE.getEditor('editor_CN'),
+    $_ueditor_en: UE.getEditor('editor_EN'),
     init: function () {
-
+        RaeClassForm.AddFloatingTool();
+        RaeClassForm.BindToolEvent();
     },
-    FormContent: {},
+    initFormContent: function (fnumber) {
+        var isAddMode = isNullOrEmpty(fnumber);
+        var url = isAddMode ? UrlHelper.getUrl("GetEmptyFormContent") : UrlHelper.getUrl("GetFormContent");
+        var data = isAddMode ? null : { fnumber: fnumber };
+        $getJSONSync(url, { fnumber: fnumber }, function (data) {
+            RaeClassForm.FormContent = data.content;
+        });
+        //修改模式
+        if (!isAddMode) {
+            $("#fnumber").val(RaeClassForm.formContent.fnumber);
+            $("#fname").val(RaeClassForm.formContent.fname);
+            $("#flevel").val(RaeClassForm.formContent.flevel);
+            $("#fcreateTime").val(RaeClassForm.formContent.fcreateTime);
+            $("#frecordFileId1").val(RaeClassForm.formContent.frecordFileId1);
+            $("#frecordFileId2").val(RaeClassForm.formContent.frecordFileId2);
+            RaeClassForm.$_ueditor_cn.ready(function () {
+                if (RaeClassForm.FormContent != null) {
+                    ue.execCommand('insertHtml', RaeClassForm.formContent.fcnContent);
+                }
+            });
+            RaeClassForm.$_ueditor_en.ready(function () {
+                if (RaeClassForm.FormContent != null) {
+                    ue.execCommand('insertHtml', RaeClassForm.formContent.fencontent);
+                }
+            });
+        }
+    },
     /* ToolButtons */
     $formSaveButton: $('#' + ToolName.SAVE),
     $formDeleteButton: $('#' + ToolName.DELETE),
@@ -150,13 +181,31 @@ RaeClassForm = {
     $formExportButton: $('#' + ToolName.EXPORT),
     $formGoTopButton: $('#' + ToolName.GOTOP),
     /* ToolButtonsEvent */
-    formSave: function (url) {
-        $postJSON(url, RaeClassForm.FormContent, function (data) {
+    formSave: function () {
+        $postJSON(UrlHelper.getUrl("Save"), RaeClassForm.formContent, function (data) {
             if (data.isOk) { alert("ok"); }
             else { alert("error"); }
         });
     },
-    
+    formSubmit: function () {
+        var json = {fnumbers:[]};
+        if (RaeClassForm.IsListMode) {
+
+        } else {
+            json.fnumbers.push(RaeClassForm.formContent.fnumber);
+        }
+        $postJSON(UrlHelper.getUrl("Submit"), , function (data) {
+            if (data.isOk) { alert("ok"); }
+            else { alert("error"); }
+        });
+    },
+    formExport: function () {
+        if (RaeClassForm.IsListMode) {
+
+        } else {
+            window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?fnumbers=" + read.fnumber;
+        }
+    },
     AddFloatingTool: function (toolArr) {
         var account = [];
         if (toolArr) {
@@ -164,14 +213,14 @@ RaeClassForm = {
                 account.push({ "type": item, "tip": item, "text": "", "url": "" });
             });
         } else {
-            account.push({ "type": ToolName.Save, "tip": ToolName.Save, "text": "", "url": "" });
-            account.push({ "type": ToolName.Delete, "tip": ToolName.Delete, "text": "", "url": "" });
-            account.push({ "type": ToolName.Freeze, "tip": ToolName.Delete, "text": "", "url": "" });
-            account.push({ "type": ToolName.UnFreeze, "tip": ToolName.Delete, "text": "", "url": "" });
-            account.push({ "type": ToolName.Submit, "tip": ToolName.Delete, "text": "", "url": "" });
-            account.push({ "type": ToolName.Export, "tip": ToolName.Delete, "text": "", "url": "" });
-            account.push({ "type": ToolName.Import, "tip": ToolName.Delete, "text": "", "url": "" });
-            account.push({ "type": ToolName.GoTop, "tip": ToolName.Delete, "text": "", "url": "" });
+            account.push({ "type": ToolName.SAVE, "tip": ToolName.SAVE, "text": "", "url": "" });
+            account.push({ "type": ToolName.DELETE, "tip": ToolName.DELETE, "text": "", "url": "" });
+            account.push({ "type": ToolName.FREEZE, "tip": ToolName.FREEZE, "text": "", "url": "" });
+            account.push({ "type": ToolName.UNFREEZE, "tip": ToolName.UNFREEZE, "text": "", "url": "" });
+            account.push({ "type": ToolName.SUBMIT, "tip": ToolName.SUBMIT, "text": "", "url": "" });
+            account.push({ "type": ToolName.EXPORT, "tip": ToolName.EXPORT, "text": "", "url": "" });
+            account.push({ "type": ToolName.IMPORT, "tip": ToolName.IMPORT, "text": "", "url": "" });
+            account.push({ "type": ToolName.GOTOP, "tip": ToolName.GOTOP, "text": "", "url": "" });
         }
         $("body").floating(
             {
@@ -180,8 +229,9 @@ RaeClassForm = {
         );
     },
     BindToolEvent: function () {
-        $("#Save").bind("click", save);
-        $("#Export").bind("click", downLoadReadJson);
+        RaeClassForm.$formSaveButton.bind("click", RaeClassForm.formSave);
+        RaeClassForm.$formSubmitButton.bind("click", RaeClassForm.formSubmit);
+        RaeClassForm.$formExportButton.bind("click", RaeClassForm.formExport);
     },
 };
 

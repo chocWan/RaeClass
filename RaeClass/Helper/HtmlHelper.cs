@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace RaeClass.Helper
 {
-    public static class HtmlHelperExtension
+    public static class HtmlHelper
     {
-        public static string foo(this IHtmlHelper html, string key)
+        public static string InitFormContentModel(this IHtmlHelper html, string fnumber)
         {
+
             return "";
         }
     }

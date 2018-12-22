@@ -1,4 +1,5 @@
-﻿@{
+﻿@using RaeClass.Helper;
+@{
     ViewData["Title"] = "ReadDetail";
     Layout = "~/Views/Shared/_RaeClassMS_Master_Layout.cshtml";
 }
@@ -60,8 +61,8 @@
         </div>
     </div>
     <!-- 基本信息 End -->
-    <!-- 基本信息 Start -->
-    <div class="panel" id="_unpayBaseInfo" title="基本信息">
+    <!-- CN文章信息 Start -->
+    <div class="panel" id="cnContent" title="基本信息">
         <div class="panel-heading bg-primary">
             <p class="panel-title">
                 <span class="panel-title">
@@ -71,11 +72,27 @@
         </div>
         <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
             <!-- 加载编辑器的容器 -->
-            <script id="editor" name="content" type="text/plain">
+            <script id="editor_CN" name="content" type="text/plain">
             </script>
         </div>
     </div>
-    <!-- 基本信息 End -->
+    <!-- CN文章信息 End -->
+    <!-- EN文章信息 Start -->
+    <div class="panel" id="enContent" title="基本信息">
+        <div class="panel-heading bg-primary">
+            <p class="panel-title">
+                <span class="panel-title">
+                    <b>文章内容</b>
+                </span>
+            </p>
+        </div>
+        <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
+            <!-- 加载编辑器的容器 -->
+            <script id="editor_EN" name="content" type="text/plain">
+            </script>
+        </div>
+    </div>
+    <!-- EN文章信息 End -->
 </div>
 
 @section scripts{
@@ -83,12 +100,19 @@
     <script src="~/lib/ueditor/ueditor.all.js"></script>
     <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
     <script src="~/lib/jquery-float/floating.js"></script>
+    <!-- RaeClass Override Start-->
+    <script>
+        var fnumber = '@ViewData["fnumber"]';
+        RaeClassForm.IsListMode = false;
+        RaeClassForm.initFormContent(fnumber);
+    </script>
+    <!-- RaeClass Override End-->
     <!-- 实例化编辑器 Start-->
     <script type="text/javascript">
+
         var read = null;
         var ue = UE.getEditor('editor');
         $(function () {
-            var fnumber = '@ViewData["fnumber"]';
             var isAddMode = isNullOrEmpty(fnumber);
             var url = isAddMode ? "http://localhost:49347/api/Read/GetEmptyRead" : "http://localhost:49347/api/Read/GetRead";
             var data = isAddMode ? null : { fnumber: fnumber };
