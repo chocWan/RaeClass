@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace RaeClass.Repository
 {
-    public abstract class BaseRepository<T> where T:BaseContent
-    {
-        public void Add()
-        {
+    //public abstract class BaseRepository<T> where T:BaseContent
+    //{
+    //    public void Add()
+    //    {
             
-        }
-    }
+    //    }
+    //}
 }

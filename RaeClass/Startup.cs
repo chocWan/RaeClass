@@ -86,21 +86,21 @@ namespace RaeClass
                     db.SerialNumberSet.AddRange(serialNumbers);
                     db.SaveChanges();
                 }
-                if (db.ReadContentSet.Count() == 0)
+                if (db.BaseFormContentSet.Count() == 0)
                 {
                     var readContents = GetTestInitReadContentData();
-                    db.ReadContentSet.AddRange(readContents);
+                    db.BaseFormContentSet.AddRange(readContents);
                     db.SaveChanges();
                 }
             }
         }
 
-        private List<ReadContent> GetTestInitReadContentData()
+        private List<BaseFormContent> GetTestInitReadContentData()
         {
-            List<ReadContent> readContents = new List<ReadContent>();
+            List<BaseFormContent> readContents = new List<BaseFormContent>();
             for (int i = 0; i < 5; i++)
             {
-                Read read = new Read();
+                FormContent read = new FormContent();
                 read._id = "";
                 read._openid = "oT_iO4tBijzyXT91iOW6wmGF801Q";
                 read.fcreateBy = "choc";
@@ -116,7 +116,7 @@ namespace RaeClass
                 read.fmodifyBy = "choc";
                 read.fmodifyTime = DateTime.Now.ToString();
 
-                ReadContent readContent = new ReadContent();
+                BaseFormContent readContent = new BaseFormContent();
                 readContent.FNumber = read.fnumber;
                 readContent.FName = read.fname;
                 readContent.FLevel = read.flevel;

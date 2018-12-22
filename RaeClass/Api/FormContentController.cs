@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RaeClass.Config;
 using RaeClass.Helper;
 using RaeClass.Models;
 using RaeClass.Repository;
@@ -21,7 +22,7 @@ namespace RaeClass.Api
         }
 
         [HttpGet]
-        public JsonResult Get(string contentType,string level, string titleOrContent, int pageindex = 1, int pagesize = 10)
+        public JsonResult Get(RaeClassContentType contentType,string level, string titleOrContent, int pageindex = 1, int pagesize = 10)
         {
             try
             {
@@ -37,29 +38,58 @@ namespace RaeClass.Api
         [HttpGet("GetFormContent")]
         public JsonResult GetFormContent(string fnumber)
         {
-            return Json(new { content = formContentRepository.GetBaseFormContent(fnumber) });
+            return Json(new { content = formContentRepository.GetFormContentAsync(fnumber) });
         }
 
-       [HttpGet("GetEmptyFormContent")]
+        [HttpGet("GetFormContentList")]
+        public JsonResult GetEmptyFormContentList(List<string> fnumbers)
+        {
+            return Json(new { content = formContentRepository.GetFormContentListAsync(fnumbers) });
+        }
+
+        [HttpGet("GetEmptyFormContent")]
         public JsonResult GetEmptyFormContent()
         {
-            return Json(new { content = formContentRepository.GetEmptyFormContent());
+            return Json(new { content = formContentRepository.GetEmptyFormContent() });
         }
 
         [HttpPut("Add")]
-        public async Task<JsonResult> Add(string level, string name, string cncontent, string encontent, string recordFileId1, string recordFileId2)
+        public async Task<JsonResult> Add(RaeClassContentType contentType, FormContent formContent)
         {
             try
             {
-                int res = await readRepository.AddAsync(level, name, cncontent, encontent, recordFileId1, recordFileId2);
+                int res = await formContentRepository.AddAsync(contentType,formContent);
                 if (res == 1) return Json(new { IsOk = true });
                 else return Json(new { IsOk = false });
             }
             catch (Exception ex)
             {
-                log.Error(ex);
                 throw ex;
             }
+        }
+
+        [HttpPost("Update")]
+        public async Task<JsonResult> Update(FormContent formContent)
+        {
+            try
+            {
+                int res = await formContentRepository.UpdateAsync(formContent);
+                if (res == 1) return Json(new { IsOk = true });
+                else return Json(new { IsOk = false });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("DownLoadJsonFile")]
+        public async Task<FileResult> DownLoadJsonFileAsync(List<string> fnumbers)
+        {
+            List<FormContent> formContens= await formContentRepository.GetFormContentListAsync(fnumbers);
+            string json = JsonHelper.SerializeObject(formContens);
+            byte[] fileContents = System.Text.Encoding.Default.GetBytes(json);
+            return File(fileContents, System.Net.Mime.MediaTypeNames.Application.Octet, "read.json"); //关键语句
         }
 
     }

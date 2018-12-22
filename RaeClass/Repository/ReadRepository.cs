@@ -113,7 +113,7 @@ namespace RaeClass.Repository
         {
             Read read = new Read();
             read._id = string.Empty;
-            read._openid = Const.WX_OPENID;
+            read._openid = CONST.WX_OPENID;
             read.flevel = level;
             read.fnumber = serialNumberRepository.GetSerialNumber(raeClassContentType);
             read.fname = name;
@@ -124,8 +124,8 @@ namespace RaeClass.Repository
             read.fmodifyTime = DateTime.Now.ToString();
             read.fmodifyBy = "Rae";
             read.fdocStatus = "C";
-            read.frecordFileId1 = Const.WX_READ_RECORD_PREFIX + recordFileId1;
-            read.frecordFileId2 = Const.WX_READ_RECORD_PREFIX + recordFileId2;
+            read.frecordFileId1 = CONST.WX_READ_RECORD_PREFIX + recordFileId1;
+            read.frecordFileId2 = CONST.WX_READ_RECORD_PREFIX + recordFileId2;
             return read;
         }
 

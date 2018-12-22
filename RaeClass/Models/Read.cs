@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 namespace RaeClass.Models
 {
 
-    public class ReadContent : BaseContent
+    public class ReadContent : BaseFormContent
     {
     }
 
-    public class Read: FormContent
+    public class Read : FormContent
     {
-        
+
     }
 }

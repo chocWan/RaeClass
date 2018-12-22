@@ -11,6 +11,7 @@ namespace RaeClass.Models
         [Key]
         public int FId { set; get; }
         public string FContentType { set; get; }
+        public string FDocStatus { set; get; }
         public string FNumber { set; get; }
         public string FName { set; get; }
         public string FLevel { set; get; }

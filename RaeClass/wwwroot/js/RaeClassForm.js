@@ -112,49 +112,51 @@ function isNullOrEmpty() {
 }
 
 ToolName = {
-    Save:"Save",
-    Delete:"Delete",
-    Freeze:"Freeze",
-    UnFreeze:"UnFreeze",
-    Submit:"Submit",
-    Import:"Import",
-    Export:"Export",
-    GoTop:"GoTop",
+    SAVE:"Save",
+    DELETE:"Delete",
+    FREEZE:"Freeze",
+    UNFREEZE:"UnFreeze",
+    SUBMIT:"Submit",
+    IMPORT:"Import",
+    EXPORT:"Export",
+    GOTOP:"GoTop",
 };
 
+DocStatus = {
+    SAVE: "A",
+    DELETE: "D",
+    FORBID: "B",
+    SUBMIT: "C",
+}
+
+UrlHelper = {
+    getUrl = function (actionName) {
+        return "http://localhost:49347/api/FormContent/" + actionName;
+    },
+}
+
 RaeClassForm = {
+    init: function () {
+
+    },
     FormContent: {},
     /* ToolButtons */
-    $formSaveButton: $('#' + ToolName.Save),
-    $formDeleteButton: $('#' + ToolName.Delete),
-    $formFreezeButton: $('#' + ToolName.Freeze),
-    $formUnFreezeButton: $('#' + ToolName.UnFreeze),
-    $formSubmitButton: $('#' + ToolName.Submit),
-    $formImportButton: $('#' + ToolName.Import),
-    $formExportButton: $('#' + ToolName.Export),
-    $formGoTopButton: $('#' + ToolName.GoTop),
+    $formSaveButton: $('#' + ToolName.SAVE),
+    $formDeleteButton: $('#' + ToolName.DELETE),
+    $formFreezeButton: $('#' + ToolName.FREEZE),
+    $formUnFreezeButton: $('#' + ToolName.UNFREEZE),
+    $formSubmitButton: $('#' + ToolName.SUBMIT),
+    $formImportButton: $('#' + ToolName.IMPORT),
+    $formExportButton: $('#' + ToolName.EXPORT),
+    $formGoTopButton: $('#' + ToolName.GOTOP),
     /* ToolButtonsEvent */
-    formSave: function () {
-        var read = getReadDataByForm();
-        var url = "http://localhost:49347/api/Read/Update";
-        var data = { fnumber: read.fnumber, level: read.flevel, name: read.fname, cncontent: read.fcnContent, encontent: read.fenContent, recordFileId1: read.frecordFileId1, recordFileId2: read.frecordFileId2 };
-        $postJSON(url, data, function (data) {
+    formSave: function (url) {
+        $postJSON(url, RaeClassForm.FormContent, function (data) {
             if (data.isOk) { alert("ok"); }
             else { alert("error"); }
         });
     },
-    var getReadDataByForm = function () {
-        read.fname = $("#fname").val();
-        read.flevel = $("#flevel").val();
-        read.fcreateTime = $("#fcreateTime").val();
-        read.frecordFileId1 = $("#frecordFileId1").val();
-        read.frecordFileId2 = $("#frecordFileId2").val();
-        read.fcnContent = ue.getAllHtml();
-        read.fenContent = ue.getAllHtml();
-        return read;
-    };
-
-
+    
     AddFloatingTool: function (toolArr) {
         var account = [];
         if (toolArr) {

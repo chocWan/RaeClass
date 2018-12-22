@@ -1,4 +1,5 @@
-﻿using RaeClass.Models;
+﻿using RaeClass.Config;
+using RaeClass.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,12 @@ namespace RaeClass.Repository
 {
     public interface IFormContentRepository
     {
-        Task<int> AddAsync(FormContent baseFormContent);
-        Task<int> UpdateAsync(FormContent baseFormContent);
-        Tuple<List<FormContent>, int> GetPageListAsync(string contentType, string level, string titleOrContent, int pageindex, int pagesize);
-        FormContent GetBaseFormContent(string fumber);
+        Task<int> AddAsync(RaeClassContentType contentType, FormContent formContent);
+        Task<int> UpdateAsync(FormContent formContent);
+        Task<int> UpdateListAsync(List<FormContent> formContents);
+        Tuple<List<FormContent>, int> GetPageListAsync(RaeClassContentType raeClassContentType, string level, string titleOrContent, int pageindex, int pagesize);
+        Task<FormContent> GetFormContentAsync(string fumber);
+        Task<List<FormContent>> GetFormContentListAsync(List<string> fumbers);
         FormContent GetEmptyFormContent();
     }
 }
