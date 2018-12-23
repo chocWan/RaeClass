@@ -17,10 +17,9 @@ namespace RaeClass.Controllers
             return View();
         }
 
-        public IActionResult FormContent()
+        public IActionResult FormContent(string contentType)
         {
-            string contentType = this.TempData["contentType"] as string;
-            this.ViewData["contentType"] = contentType;
+            ViewData["contentType"] = contentType;
             return View();
         }
 
@@ -36,18 +35,6 @@ namespace RaeClass.Controllers
             if (string.IsNullOrEmpty(fnumber)) fnumber = string.Empty;
             ViewData["fnumber"] = fnumber;
             return View();
-        }
-
-        public IActionResult Read()
-        {
-            this.TempData["contentType"] = RaeClassContentType.Read.ToString();
-            return RedirectToAction("FormContentDetail");
-        }
-
-        public IActionResult Listen()
-        {
-            this.TempData["contentType"] = RaeClassContentType.Listen.ToString();
-            return RedirectToAction("FormContentDetail");
         }
 
     }

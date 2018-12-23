@@ -89,7 +89,7 @@ namespace RaeClass.Repository
             StringBuilder sb = new StringBuilder();
             if (contentType != 0)
             {
-                sb.AppendFormat(" and FContentType = {0} ", contentType);
+                sb.AppendFormat(" and FContentType = '{0}' ", contentType);
             }
             if (level.Trim() != "0")
             {

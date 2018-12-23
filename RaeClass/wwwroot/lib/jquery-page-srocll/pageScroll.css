@@ -1,0 +1,27 @@
+﻿.pageIndex {
+position: fixed;
+right: 60px;
+top: 50%;
+text-align: center;
+}
+
+.pageIndex ul {
+text-align: center;
+width: 60px;
+list-style: none;
+}
+
+.pageIndex li {
+margin-top: 30px;
+position: relative;
+width: 60px;
+background-color: #000;
+color: #fff;
+text-align: center;
+cursor: pointer;
+font-size: 10px
+}
+
+.pageIndex li :hover {
+background-color: rgba(51, 122, 183, 0.5);
+}

@@ -174,11 +174,11 @@ color: rgba(51, 122, 183, 0.5);
     color: #337ab7
 }
 
-    .parts-floating li[data-type=Delete]:hover {
-        background-color: rgba(241, 88, 57, 0.50);
-        border-color: rgba(241, 88, 57, 0.50);
-        color: rgba(241, 88, 57, 0.50);
-    }
+.parts-floating li[data-type=Delete]:hover {
+    background-color: rgba(241, 88, 57, 0.50);
+    border-color: rgba(241, 88, 57, 0.50);
+    color: rgba(241, 88, 57, 0.50);
+}
 
 .parts-floating li[data-type=Freeze] {
 background-color: #337ab7;

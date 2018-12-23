@@ -13,6 +13,7 @@
     </environment>
 </head>
 <body>
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -26,9 +27,11 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="RaeClassMS" asp-action="Index">Index</a></li>
-                    <li><a asp-area="" asp-controller="RaeClassMS" asp-action="Read" data->Read</a></li>
-                    <li><a asp-area="" asp-controller="RaeClassMS" asp-action="Listen">Listen</a></li>
+                    <li><a href="/RaeClassMS">Index</a></li>
+                    <li><a href="/RaeClassMS/FormContent?contentType=Read">Read</a></li>
+                    <li><a href="/RaeClassMS/FormContent?contentType=Listent">Listent</a></li>
+                    <li><a href="/RaeClassMS/FormContent?contentType=Spoken">Spoken</a></li>
+                    <li><a href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
                 </ul>
             </div>
         </div>

@@ -130,26 +130,28 @@ DocStatus = {
 }
 
 UrlHelper = {
-    getUrl = function (actionName) {
-        return "http://localhost:49347/api/FormContent/" + actionName;
+    getUrl : function (actionName) {
+        return "http://localhost:5000/api/FormContent/" + actionName;
     },
+    GET: "http://localhost:5000/api/FormContent/",
 }
 
 RaeClassForm = {
     formContent: {},
     IsListMode:false,
-    $_ueditor_cn: UE.getEditor('editor_CN'),
-    $_ueditor_en: UE.getEditor('editor_EN'),
+    
     init: function () {
         RaeClassForm.AddFloatingTool();
         RaeClassForm.BindToolEvent();
     },
     initFormContent: function (fnumber) {
+        var $_ueditor_cn = UE.getEditor('editor_CN');
+        var $_ueditor_en = UE.getEditor('editor_EN');
         var isAddMode = isNullOrEmpty(fnumber);
         var url = isAddMode ? UrlHelper.getUrl("GetEmptyFormContent") : UrlHelper.getUrl("GetFormContent");
         var data = isAddMode ? null : { fnumber: fnumber };
         $getJSONSync(url, { fnumber: fnumber }, function (data) {
-            RaeClassForm.FormContent = data.content;
+            RaeClassForm.formContent = data.content.result;
         });
         //修改模式
         if (!isAddMode) {
@@ -159,17 +161,18 @@ RaeClassForm = {
             $("#fcreateTime").val(RaeClassForm.formContent.fcreateTime);
             $("#frecordFileId1").val(RaeClassForm.formContent.frecordFileId1);
             $("#frecordFileId2").val(RaeClassForm.formContent.frecordFileId2);
-            RaeClassForm.$_ueditor_cn.ready(function () {
-                if (RaeClassForm.FormContent != null) {
-                    ue.execCommand('insertHtml', RaeClassForm.formContent.fcnContent);
+            $_ueditor_cn.ready(function () {
+                if (RaeClassForm.formContent != null) {
+                    $_ueditor_cn.execCommand('insertHtml', RaeClassForm.formContent.fcnContent);
                 }
             });
-            RaeClassForm.$_ueditor_en.ready(function () {
-                if (RaeClassForm.FormContent != null) {
-                    ue.execCommand('insertHtml', RaeClassForm.formContent.fencontent);
+            $_ueditor_en.ready(function () {
+                if (RaeClassForm.formContent != null) {
+                    $_ueditor_en.execCommand('insertHtml', RaeClassForm.formContent.fencontent);
                 }
             });
         }
+        RaeClassForm.AddPageScroll();
     },
     /* ToolButtons */
     $formSaveButton: $('#' + ToolName.SAVE),
@@ -194,7 +197,7 @@ RaeClassForm = {
         } else {
             json.fnumbers.push(RaeClassForm.formContent.fnumber);
         }
-        $postJSON(UrlHelper.getUrl("Submit"), , function (data) {
+        $postJSON(UrlHelper.getUrl("Submit"), function (data) {
             if (data.isOk) { alert("ok"); }
             else { alert("error"); }
         });
@@ -232,6 +235,17 @@ RaeClassForm = {
         RaeClassForm.$formSaveButton.bind("click", RaeClassForm.formSave);
         RaeClassForm.$formSubmitButton.bind("click", RaeClassForm.formSubmit);
         RaeClassForm.$formExportButton.bind("click", RaeClassForm.formExport);
+    },
+    AddPageScroll: function () {
+        var pageIndexItem1 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
+        var pageIndexItem2 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
+        var pageIndexItem3 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
+        var pageIndexItems = [pageIndexItem1, pageIndexItem2, pageIndexItem3];
+        $("body").pageIndexing(
+            {
+                "state": true, "moveState": true, "size": "auto", "position": "left-center", "pageIndexItems": pageIndexItems
+            }
+        );
     },
 };
 
