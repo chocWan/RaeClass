@@ -238,8 +238,8 @@ RaeClassForm = {
     },
     AddPageScroll: function () {
         var pageIndexItem1 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
-        var pageIndexItem2 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
-        var pageIndexItem3 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
+        var pageIndexItem2 = { indexName: "文章内容-CN", refElementId:"formContent_CN"};
+        var pageIndexItem3 = { indexName: "文章内容-EN", refElementId:"formContent_EN"};
         var pageIndexItems = [pageIndexItem1, pageIndexItem2, pageIndexItem3];
         $("body").pageIndexing(
             {
