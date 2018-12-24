@@ -39,12 +39,10 @@
                         //为了保证兼容性，这里取两个值，哪个有值取哪一个
                         //scrollTop就是触发滚轮事件时滚轮的高度
                         var scrollTop = document.documentElement.scrollTop;
-                        console.log(scrollTop);
                         var pageIndexs = [];
                         $.each(initialize.pageIndexItems, function (index, item) {
                             pageIndexs.push({ indexId: "#" + item.refElementId + "_index", top: $("#" + item.refElementId).offset().top - $("#navbanner").get(0).offsetHeight - scrollTop});
                         });
-                        this.console.log(pageIndexs);
                         var tempRes = null;
                         $.each(pageIndexs, function (index, item) {
                             if (0 >= item.top) {
