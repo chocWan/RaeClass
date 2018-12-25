@@ -56,7 +56,7 @@ namespace RaeClass.Api
         [HttpPost("Save")]
         public async Task<JsonResult> Save(RaeClassContentType contentType, FormContent formContent)
         {
-            if (!string.IsNullOrEmpty(formContent.fnumber))
+            if (string.IsNullOrEmpty(formContent.fnumber))
             {
                 int res = await formContentRepository.AddAsync(contentType, formContent);
                 if (res == 1) return Json(new { IsOk = true });
@@ -85,16 +85,17 @@ namespace RaeClass.Api
         }
 
         [HttpPost("Submit")]
-        public async Task<JsonResult> Submit(List<string> formContents)
+        public async Task<JsonResult> Submit(List<string> fnumbers)
         {
-            int submitCount = await formContentRepository.UpdateDocStatusListAsync(formContents,DocStatus.SUBMIT);
+            int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.SUBMIT);
             return Json(new { IsOk = true });
         }
 
         [HttpGet("DownLoadJsonFile")]
-        public async Task<FileResult> DownLoadJsonFile(List<string> fnumbers)
+        public async Task<FileResult> DownLoadJsonFile(string fnumbers)
         {
-            List<FormContent> formContens= await formContentRepository.GetFormContentListAsync(fnumbers);
+            List<string> _fnumbers = fnumbers.Split(',').ToList();
+            List<FormContent> formContens= await formContentRepository.GetFormContentListAsync(_fnumbers);
             string json = JsonHelper.SerializeObject(formContens);
             byte[] fileContents = System.Text.Encoding.Default.GetBytes(json);
             return File(fileContents, System.Net.Mime.MediaTypeNames.Application.Octet, "read.json"); //关键语句

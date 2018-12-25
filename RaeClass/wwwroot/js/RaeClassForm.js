@@ -127,7 +127,7 @@ DocStatus = {
     DELETE: "D",
     FORBID: "B",
     SUBMIT: "C",
-}
+};
 
 UrlHelper = {
     getUrl : function (actionName) {
@@ -138,6 +138,7 @@ UrlHelper = {
 
 RaeClassForm = {
     formContent: {},
+    formContentType: null,
     IsListMode:false,
     
     init: function () {
@@ -168,11 +169,39 @@ RaeClassForm = {
             });
             $_ueditor_en.ready(function () {
                 if (RaeClassForm.formContent != null) {
-                    $_ueditor_en.execCommand('insertHtml', RaeClassForm.formContent.fencontent);
+                    $_ueditor_en.execCommand('insertHtml', RaeClassForm.formContent.fenContent);
                 }
             });
         }
         RaeClassForm.AddPageScroll();
+    },
+    getContentDataByForm : function () {
+        RaeClassForm.formContent.fname = $("#fname").val();
+        RaeClassForm.formContent.flevel = $("#flevel").val();
+        RaeClassForm.formContent.fcreateTime = $("#fcreateTime").val();
+        RaeClassForm.formContent.frecordFileId1 = $("#frecordFileId1").val();
+        RaeClassForm.formContent.frecordFileId2 = $("#frecordFileId2").val();
+        RaeClassForm.formContent.fcnContent = UE.getEditor('editor_CN').getContent();
+        RaeClassForm.formContent.fenContent = UE.getEditor('editor_EN').getContent();
+        return RaeClassForm.formContent;
+    },
+    setFormDisabled: function () {
+        $("#fname").attr("disabled", "disabled");
+        $("#flevel").attr("disabled", "disabled");
+        $("#fcreateTime").attr("disabled", "disabled");
+        $("#frecordFileId1").attr("disabled", "disabled");
+        $("#frecordFileId2").attr("disabled", "disabled");
+        UE.getEditor('editor_CN').setDisabled();
+        UE.getEditor('editor_EN').setDisabled();
+    },
+    setFormUnDisabled: function () {
+        $("#fname").removeAttr('disabled');
+        $("#flevel").removeAttr('disabled');
+        $("#fcreateTime").removeAttr('disabled');
+        $("#frecordFileId1").removeAttr('disabled');
+        $("#frecordFileId2").removeAttr('disabled');
+        UE.getEditor('editor_CN').setEnabled();
+        UE.getEditor('editor_EN').setEnabled();
     },
     /* ToolButtons */
     $formSaveButton: $('#' + ToolName.SAVE),
@@ -185,7 +214,7 @@ RaeClassForm = {
     $formGoTopButton: $('#' + ToolName.GOTOP),
     /* ToolButtonsEvent */
     formSave: function () {
-        $postJSON(UrlHelper.getUrl("Save"), RaeClassForm.formContent, function (data) {
+        $postJSON(UrlHelper.getUrl("Save"), { contentType: RaeClassForm.formContentType, formContent: RaeClassForm.getContentDataByForm() }, function (data) {
             if (data.isOk) { alert("ok"); }
             else { alert("error"); }
         });
@@ -197,17 +226,19 @@ RaeClassForm = {
         } else {
             json.fnumbers.push(RaeClassForm.formContent.fnumber);
         }
-        $postJSON(UrlHelper.getUrl("Submit"), function (data) {
+        $postJSON(UrlHelper.getUrl("Submit"), { contentType: RaeClassForm.formContentType, formContent: RaeClassForm.getContentDataByForm() }, function (data) {
             if (data.isOk) { alert("ok"); }
             else { alert("error"); }
         });
     },
     formExport: function () {
+        var fnumbers = [];
         if (RaeClassForm.IsListMode) {
 
         } else {
-            window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?fnumbers=" + read.fnumber;
+            fnumbers.push(RaeClassForm.formContent.fnumber);
         }
+        window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?fnumbers=" + fnumbers.join(",");
     },
     AddFloatingTool: function (toolArr) {
         var account = [];
@@ -232,9 +263,12 @@ RaeClassForm = {
         );
     },
     BindToolEvent: function () {
-        RaeClassForm.$formSaveButton.bind("click", RaeClassForm.formSave);
-        RaeClassForm.$formSubmitButton.bind("click", RaeClassForm.formSubmit);
-        RaeClassForm.$formExportButton.bind("click", RaeClassForm.formExport);
+        //RaeClassForm.$formSaveButton.bind("click", RaeClassForm.formSave);
+        //RaeClassForm.$formSubmitButton.bind("click", RaeClassForm.formSubmit);
+        //RaeClassForm.$formExportButton.bind("click", RaeClassForm.formExport);
+        $("#" + ToolName.SAVE).bind("click", RaeClassForm.formSave);
+        $("#" + ToolName.SUBMIT).bind("click", RaeClassForm.formSubmit);
+        $("#" + ToolName.EXPORT).bind("click", RaeClassForm.formExport);
     },
     AddPageScroll: function () {
         var pageIndexItem1 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};

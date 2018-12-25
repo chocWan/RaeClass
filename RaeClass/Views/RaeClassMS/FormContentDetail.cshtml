@@ -42,15 +42,15 @@
             <div class="form-group">
                 <label class="control-label col-sm-1">文章听力</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control required" id="frecordFileId1" name="frecordFileId1" />
+                    <input type="text" class="form-control" id="frecordFileId1" name="frecordFileId1" />
                 </div>
                 <label class="control-label col-sm-1">讲解听力</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control required" id="frecordFileId2" name="frecordFileId2" />
+                    <input type="text" class="form-control" id="frecordFileId2" name="frecordFileId2" />
                 </div>
                 <label class="control-label col-sm-1">创建日期</label>
                 <div class="col-sm-2">
-                    <input readonly type="text" class="form-control required" placeholder="系统自动生成" id="fcreateTime" name="fcreateTime" />
+                    <input readonly type="text" class="form-control" placeholder="系统自动生成" id="fcreateTime" name="fcreateTime" />
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
                 </span>
             </p>
         </div>
-        <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
+        <div class="panel-body panel-collapse collapse in top10">
             <!-- 加载编辑器的容器 -->
             <script id="editor_CN" name="content" type="text/plain">
             </script>
@@ -81,7 +81,7 @@
                 </span>
             </p>
         </div>
-        <div id="unpayBaseInfo" class="panel-body panel-collapse collapse in top10">
+        <div class="panel-body panel-collapse collapse in top10">
             <!-- 加载编辑器的容器 -->
             <script id="editor_EN" name="content" type="text/plain">
             </script>
@@ -103,6 +103,7 @@
     <script>
         var fnumber = '@ViewData["fnumber"]';
         RaeClassForm.IsListMode = false;
+        RaeClassForm.formContentType = '@ViewData["contentType"]';
         RaeClassForm.initFormContent(fnumber);
     </script>
     <!-- RaeClass Override End-->

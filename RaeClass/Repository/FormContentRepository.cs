@@ -69,6 +69,10 @@ namespace RaeClass.Repository
 
         public async Task<int> UpdateDocStatusListAsync(List<string> fnumbers,string docStatus)
         {
+
+            var query = await context.BaseFormContentSet.Where(item => DocStatus.SUBMIT.Equals(item.FDocStatus) && fnumbers.Contains(item.FNumber)).Select(x => x.FNumber).ToListAsync();
+            if(query.Count > 0) throw new Exception("there are doc being save status,please save first!" + string.Join(",",query.ToArray()));
+
             await context.BaseFormContentSet
                 .Where(x => fnumbers.Contains(x.FNumber) && x.FDocStatus.Equals(DocStatus.SAVE))
                 .ForEachAsync( item=> {

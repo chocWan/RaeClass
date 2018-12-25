@@ -30,10 +30,11 @@ namespace RaeClass.Controllers
         /// <param name="read"></param>
         /// <param name="isModify"></param>
         /// <returns></returns>
-        public IActionResult FormContentDetail(string fnumber)
+        public IActionResult FormContentDetail(RaeClassContentType contentType,string fnumber)
         {
             if (string.IsNullOrEmpty(fnumber)) fnumber = string.Empty;
             ViewData["fnumber"] = fnumber;
+            ViewData["contentType"] = contentType;
             return View();
         }
 

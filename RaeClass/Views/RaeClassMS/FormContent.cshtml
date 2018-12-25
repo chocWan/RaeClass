@@ -65,7 +65,15 @@
                     editable: false,
                     showFullscreen: true,
                     columns: [
-                        { checkbox: true },
+                        {
+                            checkbox: true,
+                            formatter: function (i, row) {            // 每次加载 checkbox 时判断当前 row 的 id 是否已经存在全局 Set() 里
+                                if ($.inArray(row.id, overAllIds) != -1) {// 因为 判断数组里有没有这个 id 
+                                    return {
+                                        checked: true               // 存在则选中
+                                    }
+                                }
+                            }},
                         { field: 'fnumber', title: '文章编号' },
                         { field: 'fname', title: '文章名称' },
                     ],
@@ -89,12 +97,29 @@
     <!--初始Table End-->
     <!--Table事件注册 Start-->
     <script>
+        $('#tb_read').on('uncheck.bs.table check.bs.table check-all.bs.table uncheck-all.bs.table', function (e, rows) {
+            var datas = $.isArray(rows) ? rows : [rows];        // 点击时获取选中的行或取消选中的行
+            examine(e.type, datas);                              // 保存到全局 Array() 里
+        });
         $('#tb_read').on('dbl-click-row.bs.table', function (e, row, $element) {
             //删除checkbox 列
             delete row[0];
-            window.location.href = "/RaeClassMS/FormContentDetail?fnumber=" + row.fnumber;
+            window.location.href = "/RaeClassMS/FormContentDetail?contentType=" + contentType+"&fnumber=" + row.fnumber;
         });
-        $("#Save").bind("click", function () { alert(); });
+        var overAllIds = new Array();  //全局数组
+        function examine(type, datas) {
+            if (type.indexOf('uncheck') == -1) {
+                $.each(datas, function (i, v) {
+                    // 添加时，判断一行或多行的 id 是否已经在数组里 不存则添加　
+                    overAllIds.indexOf(v.id) == -1 ? overAllIds.push(v.id) : -1;
+                });
+            } else {
+                $.each(datas, function (i, v) {
+                    overAllIds.splice(overAllIds.indexOf(v.id), 1);    //删除取消选中行
+                });
+            }
+            console.log(overAllIds);
+        }
     </script>
     <!--Table事件注册 End-->
 }
