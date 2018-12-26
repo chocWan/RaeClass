@@ -58,8 +58,8 @@ namespace RaeClass.Api
         {
             if (string.IsNullOrEmpty(formContent.fnumber))
             {
-                int res = await formContentRepository.AddAsync(contentType, formContent);
-                if (res == 1) return Json(new { IsOk = true });
+                FormContent _formContent = await formContentRepository.AddAsync(contentType, formContent);
+                if (_formContent != null) return Json(new { IsOk = true , content = _formContent });
                 else return Json(new { IsOk = false });
             }
             else {
@@ -73,12 +73,13 @@ namespace RaeClass.Api
             }
         }
 
-        [HttpPost("Submit")]
+        [HttpPost("SubmitWithContent")]
         public async Task<JsonResult> Submit(RaeClassContentType contentType, List<FormContent> formContents)
         {
             formContents.ForEach(item=>item.fdocStatus = DocStatus.SUBMIT);
             int querySaveStatusCount = formContents.Where(x => string.IsNullOrEmpty(x.fnumber)).Count();
             if (querySaveStatusCount > 0) throw new Exception("there are doc being save status,please save first!");
+
             var querySubmit = formContents.Where(x => string.IsNullOrEmpty(x.fnumber));
             int submitCount = await formContentRepository.UpdateListAsync(formContents);
             return Json(new { IsOk = true });
@@ -87,7 +88,37 @@ namespace RaeClass.Api
         [HttpPost("Submit")]
         public async Task<JsonResult> Submit(List<string> fnumbers)
         {
+            var query = await formContentRepository.GetFormContentListAsync(fnumbers);
+            var res = query.Where(x=>!x.fdocStatus.Equals(DocStatus.SAVE)).Select(x=>x.fnumber).ToArray();
+
+            if (res.Length > 0)
+            {
+                throw new Exception("there are doc being save status or forbid status,please save first or unFreeze first !" + string.Join(",", res));
+            }
+
             int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.SUBMIT);
+            return Json(new { IsOk = true });
+        }
+
+        [HttpPost("UnFreeze")]
+        public async Task<JsonResult> UnFreeze(List<string> fnumbers)
+        {
+            var query = await formContentRepository.GetFormContentListAsync(fnumbers);
+            var res = query.Where(x => !x.fdocStatus.Equals(DocStatus.FORBID)).Select(x => x.fnumber).ToArray();
+
+            if (res.Length > 0)
+            {
+                throw new Exception("there are doc being not forbid status !" + string.Join(",", res));
+            }
+
+            int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.SAVE);
+            return Json(new { IsOk = true });
+        }
+
+        [HttpPost("Freeze")]
+        public async Task<JsonResult> Freeze(List<string> fnumbers)
+        {
+            int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.FORBID);
             return Json(new { IsOk = true });
         }
 

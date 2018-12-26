@@ -9,7 +9,7 @@ namespace RaeClass.Repository
 {
     public interface IFormContentRepository
     {
-        Task<int> AddAsync(RaeClassContentType contentType, FormContent formContent);
+        Task<FormContent> AddAsync(RaeClassContentType contentType, FormContent formContent);
         Task<int> AddListAsync(RaeClassContentType contentType, List<FormContent> formContent);
         Task<int> UpdateAsync(FormContent formContent);
         Task<int> UpdateListAsync(List<FormContent> formContents);

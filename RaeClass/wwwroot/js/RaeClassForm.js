@@ -139,15 +139,13 @@ UrlHelper = {
 RaeClassForm = {
     formContent: {},
     formContentType: null,
-    IsListMode:false,
-    
+    IsListMode: false,
     init: function () {
         RaeClassForm.AddFloatingTool();
         RaeClassForm.BindToolEvent();
     },
     initFormContent: function (fnumber) {
-        var $_ueditor_cn = UE.getEditor('editor_CN');
-        var $_ueditor_en = UE.getEditor('editor_EN');
+        
         var isAddMode = isNullOrEmpty(fnumber);
         var url = isAddMode ? UrlHelper.getUrl("GetEmptyFormContent") : UrlHelper.getUrl("GetFormContent");
         var data = isAddMode ? null : { fnumber: fnumber };
@@ -156,24 +154,39 @@ RaeClassForm = {
         });
         //修改模式
         if (!isAddMode) {
-            $("#fnumber").val(RaeClassForm.formContent.fnumber);
-            $("#fname").val(RaeClassForm.formContent.fname);
-            $("#flevel").val(RaeClassForm.formContent.flevel);
-            $("#fcreateTime").val(RaeClassForm.formContent.fcreateTime);
-            $("#frecordFileId1").val(RaeClassForm.formContent.frecordFileId1);
-            $("#frecordFileId2").val(RaeClassForm.formContent.frecordFileId2);
-            $_ueditor_cn.ready(function () {
-                if (RaeClassForm.formContent != null) {
-                    $_ueditor_cn.execCommand('insertHtml', RaeClassForm.formContent.fcnContent);
-                }
-            });
-            $_ueditor_en.ready(function () {
-                if (RaeClassForm.formContent != null) {
-                    $_ueditor_en.execCommand('insertHtml', RaeClassForm.formContent.fenContent);
-                }
-            });
+            RaeClassForm.setFormByContent();
         }
         RaeClassForm.AddPageScroll();
+    },
+    setFormByContent: function () {
+        var $_ueditor_cn = UE.getEditor('editor_CN');
+        var $_ueditor_en = UE.getEditor('editor_EN');
+        $("#fnumber").val(RaeClassForm.formContent.fnumber);
+        $("#fname").val(RaeClassForm.formContent.fname);
+        $("#flevel").val(RaeClassForm.formContent.flevel);
+        $("#fcreateTime").val(RaeClassForm.formContent.fcreateTime);
+        $("#frecordFileId1").val(RaeClassForm.formContent.frecordFileId1);
+        $("#frecordFileId2").val(RaeClassForm.formContent.frecordFileId2);
+        if (RaeClassForm.formContent.fdocStatus == DocStatus.SUBMIT) {
+            RaeClassForm.setFormHeadDisabled();
+        }
+        $_ueditor_cn.ready(function () {
+            if (RaeClassForm.formContent != null) {
+                $_ueditor_cn.execCommand('insertHtml', RaeClassForm.formContent.fcnContent);
+                if (RaeClassForm.formContent.fdocStatus == DocStatus.SUBMIT) {
+                    $_ueditor_cn.setDisabled();
+                }
+            }
+        });
+        $_ueditor_en.ready(function () {
+            if (RaeClassForm.formContent != null) {
+                $_ueditor_en.execCommand('insertHtml', RaeClassForm.formContent.fenContent);
+                if (RaeClassForm.formContent.fdocStatus == DocStatus.SUBMIT) {
+                    $_ueditor_en.setDisabled();
+                }
+            }
+        });
+        
     },
     getContentDataByForm : function () {
         RaeClassForm.formContent.fname = $("#fname").val();
@@ -185,6 +198,13 @@ RaeClassForm = {
         RaeClassForm.formContent.fenContent = UE.getEditor('editor_EN').getContent();
         return RaeClassForm.formContent;
     },
+    setFormHeadDisabled: function () {
+        $("#fname").attr("disabled", "disabled");
+        $("#flevel").attr("disabled", "disabled");
+        $("#fcreateTime").attr("disabled", "disabled");
+        $("#frecordFileId1").attr("disabled", "disabled");
+        $("#frecordFileId2").attr("disabled", "disabled");
+    },
     setFormDisabled: function () {
         $("#fname").attr("disabled", "disabled");
         $("#flevel").attr("disabled", "disabled");
@@ -194,7 +214,7 @@ RaeClassForm = {
         UE.getEditor('editor_CN').setDisabled();
         UE.getEditor('editor_EN').setDisabled();
     },
-    setFormUnDisabled: function () {
+    setFormEnabled: function () {
         $("#fname").removeAttr('disabled');
         $("#flevel").removeAttr('disabled');
         $("#fcreateTime").removeAttr('disabled');
@@ -215,19 +235,26 @@ RaeClassForm = {
     /* ToolButtonsEvent */
     formSave: function () {
         $postJSON(UrlHelper.getUrl("Save"), { contentType: RaeClassForm.formContentType, formContent: RaeClassForm.getContentDataByForm() }, function (data) {
-            if (data.isOk) { alert("ok"); }
+            if (data.isOk) {
+                alert("ok");
+                RaeClassForm.formContent = data.content.result;
+                setFormByContent();
+            }
             else { alert("error"); }
         });
     },
     formSubmit: function () {
-        var json = {fnumbers:[]};
+        var fnumbers = [];
         if (RaeClassForm.IsListMode) {
 
         } else {
-            json.fnumbers.push(RaeClassForm.formContent.fnumber);
+            fnumbers.push(RaeClassForm.formContent.fnumber);
         }
-        $postJSON(UrlHelper.getUrl("Submit"), { contentType: RaeClassForm.formContentType, formContent: RaeClassForm.getContentDataByForm() }, function (data) {
-            if (data.isOk) { alert("ok"); }
+        $postJSON(UrlHelper.getUrl("Submit"), { fnumbers: fnumbers }, function (data) {
+            if (data.isOk) {
+                RaeClassForm.setFormDisabled();
+                alert("ok");
+            }
             else { alert("error"); }
         });
     },
@@ -239,6 +266,36 @@ RaeClassForm = {
             fnumbers.push(RaeClassForm.formContent.fnumber);
         }
         window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?fnumbers=" + fnumbers.join(",");
+    },
+    formUnFreeze: function () {
+        var fnumbers = [];
+        if (RaeClassForm.IsListMode) {
+
+        } else {
+            fnumbers.push(RaeClassForm.formContent.fnumber);
+        }
+        $postJSON(UrlHelper.getUrl("UnFreeze"), { fnumbers: fnumbers }, function (data) {
+            if (data.isOk) {
+                RaeClassForm.setFormEnabled();
+                alert("ok");
+            }
+            else { alert("error"); }
+        });
+    },
+    formFreeze: function () {
+        var fnumbers = [];
+        if (RaeClassForm.IsListMode) {
+
+        } else {
+            fnumbers.push(RaeClassForm.formContent.fnumber);
+        }
+        $postJSON(UrlHelper.getUrl("Freeze"), { fnumbers: fnumbers }, function (data) {
+            if (data.isOk) {
+                RaeClassForm.setFormDisabled();
+                alert("ok");
+            }
+            else { alert("error"); }
+        });
     },
     AddFloatingTool: function (toolArr) {
         var account = [];
@@ -269,6 +326,8 @@ RaeClassForm = {
         $("#" + ToolName.SAVE).bind("click", RaeClassForm.formSave);
         $("#" + ToolName.SUBMIT).bind("click", RaeClassForm.formSubmit);
         $("#" + ToolName.EXPORT).bind("click", RaeClassForm.formExport);
+        $("#" + ToolName.UNFREEZE).bind("click", RaeClassForm.formUnFreeze);
+        $("#" + ToolName.FREEZE).bind("click", RaeClassForm.formFreeze);
     },
     AddPageScroll: function () {
         var pageIndexItem1 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
