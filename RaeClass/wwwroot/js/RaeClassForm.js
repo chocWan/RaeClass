@@ -252,7 +252,6 @@ RaeClassForm = {
         }
         $postJSON(UrlHelper.getUrl("Submit"), { fnumbers: fnumbers }, function (data) {
             if (data.isOk) {
-                RaeClassForm.setFormDisabled();
                 alert("ok");
             }
             else { alert("error"); }
@@ -305,13 +304,13 @@ RaeClassForm = {
             });
         } else {
             account.push({ "type": ToolName.SAVE, "tip": ToolName.SAVE, "text": "", "url": "" });
-            account.push({ "type": ToolName.DELETE, "tip": ToolName.DELETE, "text": "", "url": "" });
+            //account.push({ "type": ToolName.DELETE, "tip": ToolName.DELETE, "text": "", "url": "" });
             account.push({ "type": ToolName.FREEZE, "tip": ToolName.FREEZE, "text": "", "url": "" });
             account.push({ "type": ToolName.UNFREEZE, "tip": ToolName.UNFREEZE, "text": "", "url": "" });
             account.push({ "type": ToolName.SUBMIT, "tip": ToolName.SUBMIT, "text": "", "url": "" });
             account.push({ "type": ToolName.EXPORT, "tip": ToolName.EXPORT, "text": "", "url": "" });
-            account.push({ "type": ToolName.IMPORT, "tip": ToolName.IMPORT, "text": "", "url": "" });
-            account.push({ "type": ToolName.GOTOP, "tip": ToolName.GOTOP, "text": "", "url": "" });
+            //account.push({ "type": ToolName.IMPORT, "tip": ToolName.IMPORT, "text": "", "url": "" });
+            //account.push({ "type": ToolName.GOTOP, "tip": ToolName.GOTOP, "text": "", "url": "" });
         }
         $("body").floating(
             {

@@ -63,10 +63,11 @@ namespace RaeClass.Api
                 else return Json(new { IsOk = false });
             }
             else {
-                if (!formContent.fdocStatus.Equals(DocStatus.SAVE))
+                if (!formContent.fdocStatus.Equals(DocStatus.SAVE) || !formContent.fdocStatus.Equals(DocStatus.SUBMIT))
                 {
                     throw new Exception("can not save!");
                 }
+                formContent.fdocStatus = DocStatus.SAVE;
                 int res = await formContentRepository.UpdateAsync(formContent);
                 if (res == 1) return Json(new { IsOk = true });
                 else return Json(new { IsOk = false });
