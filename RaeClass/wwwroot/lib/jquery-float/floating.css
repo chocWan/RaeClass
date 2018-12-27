@@ -216,6 +216,30 @@ color: #337ab7
     color: rgba(51, 122, 183, 0.5);
 }
 
+.parts-floating li[data-type=Audit] {
+    background-color: #337ab7;
+    border-color: #337ab7;
+    color: #337ab7
+}
+
+    .parts-floating li[data-type=Audit]:hover {
+        background-color: rgba(51, 122, 183, 0.5);
+        border-color: rgba(51, 122, 183, 0.5);
+        color: rgba(51, 122, 183, 0.5);
+    }
+
+.parts-floating li[data-type=ReAudit] {
+    background-color: #337ab7;
+    border-color: #337ab7;
+    color: #337ab7
+}
+
+    .parts-floating li[data-type=ReAudit]:hover {
+        background-color: rgba(51, 122, 183, 0.5);
+        border-color: rgba(51, 122, 183, 0.5);
+        color: rgba(51, 122, 183, 0.5);
+    }
+
 .parts-floating li[data-type=Search] {
 background-color: #337ab7;
 border-color: #337ab7;

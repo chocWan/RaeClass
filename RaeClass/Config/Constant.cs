@@ -17,7 +17,7 @@ namespace RaeClass.Config
     public static class DocStatus
     {
         public static readonly string SAVE = "A";
-        public static readonly string SUBMIT = "C";
+        public static readonly string AUDIT = "C";
         public static readonly string DELETE = "D";
         public static readonly string FORBID = "B";
     }

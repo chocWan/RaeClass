@@ -21,14 +21,20 @@ namespace RaeClass.Repository
             serialNumberRepository = _serialNumberRepository;
         }
 
-        public async Task<int> AddAsync(RaeClassContentType contentType,FormContent formContent)
+        public async Task<FormContent> AddAsync(RaeClassContentType contentType,FormContent formContent)
         {
             FillFormContent(contentType,ref formContent);
             BaseFormContent baseFormContent = GetBaseFormContent(contentType, formContent);
             context.BaseFormContentSet.Add(baseFormContent);
             int res = await context.SaveChangesAsync();
-            if (res == 1) serialNumberRepository.UpdateMaxIndex(contentType);
-            return res;
+            if (res == 1)
+            {
+                serialNumberRepository.UpdateMaxIndex(contentType);
+                return formContent;
+            }
+            else {
+                return null;
+            }
         }
 
         public async Task<int> AddListAsync(RaeClassContentType contentType, List<FormContent> formContents)
@@ -58,6 +64,7 @@ namespace RaeClass.Repository
                 query.FLevel = formContent.flevel;
                 query.FJsonData = JsonHelper.SerializeObject(formContent);
                 query.FModifyTime = DateTime.Now;
+                query.FDocStatus = formContent.fdocStatus;
             }
         }
 
@@ -70,17 +77,16 @@ namespace RaeClass.Repository
         public async Task<int> UpdateDocStatusListAsync(List<string> fnumbers,string docStatus)
         {
 
-            var query = await context.BaseFormContentSet.Where(item => DocStatus.SUBMIT.Equals(item.FDocStatus) && fnumbers.Contains(item.FNumber)).Select(x => x.FNumber).ToListAsync();
-            if(query.Count > 0) throw new Exception("there are doc being save status,please save first!" + string.Join(",",query.ToArray()));
-
             await context.BaseFormContentSet
-                .Where(x => fnumbers.Contains(x.FNumber) && x.FDocStatus.Equals(DocStatus.SAVE))
+                .Where(x => fnumbers.Contains(x.FNumber))
                 .ForEachAsync( item=> {
                     var formContent = GetFormContent(item.FNumber);
+                    formContent.fdocStatus = docStatus;
                     formContent.fmodifyTime = DateTime.Now.ToString();
                     formContent.fmodifyBy = CONST.CREATOR;
                     item.FJsonData = JsonHelper.SerializeObject(formContent);
                     item.FModifyTime = DateTime.Now;
+                    item.FDocStatus = docStatus;
                 });
 
             return await context.SaveChangesAsync();
@@ -150,6 +156,8 @@ namespace RaeClass.Repository
 
         public FormContent GetEmptyFormContent()
         {
+            var formContent = new FormContent();
+            formContent.fdocStatus = DocStatus.SAVE;
             return new FormContent(); 
         }
 
@@ -176,7 +184,7 @@ namespace RaeClass.Repository
 
         private void FillFormContent(RaeClassContentType contentType,ref FormContent formContent)
         {
-            formContent._id = string.Empty;
+            formContent._id = "";
             formContent._openid = CONST.WX_OPENID;
             formContent.fnumber = serialNumberRepository.GetSerialNumber(contentType);
             formContent.fcreateTime = DateTime.Now.ToString();

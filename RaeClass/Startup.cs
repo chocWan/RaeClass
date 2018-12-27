@@ -115,7 +115,7 @@ namespace RaeClass
                 BaseFormContent readContent = new BaseFormContent();
                 readContent.FContentType = RaeClassContentType.Read.ToString();
                 readContent.FNumber = read.fnumber;
-                readContent.FDocStatus = DocStatus.SUBMIT;
+                readContent.FDocStatus = DocStatus.AUDIT;
                 readContent.FName = read.fname;
                 readContent.FLevel = read.flevel;
                 readContent.FJsonData = JsonHelper.SerializeObject(read);
