@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RaeClass</title>
+    <title>@ViewData["contentType"] - RaeClass</title>
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-table.css" />
@@ -35,10 +35,10 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" id="headCategory">
-                    <li><a href="/RaeClassMS/FormContent?contentType=Read">Read</a></li>
-                    <li><a href="/RaeClassMS/FormContent?contentType=Listent">Listent</a></li>
-                    <li><a href="/RaeClassMS/FormContent?contentType=Spoken">Spoken</a></li>
-                    <li><a href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
+                    <li><a id="Read" href="/RaeClassMS/FormContent?contentType=Read">Read</a></li>
+                    <li><a id="Listent" href="/RaeClassMS/FormContent?contentType=Listent">Listent</a></li>
+                    <li><a id="Spoken" href="/RaeClassMS/FormContent?contentType=Spoken">Spoken</a></li>
+                    <li><a id="Tech" href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
                 </ul>
                 <div id="headSearchContent" style="display:none;line-height:50px;color:#ffffff">
                     <input id="headSearchQueryContent" style="width:1000px;padding:0px;margin:0px;border-bottom-width: 0px;border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;background:#222222" name="headSearch" placeholder="请输入查询条件" />
@@ -85,6 +85,12 @@
         $("#headSearchQueryContent").blur(function () {
             $("#headCategory").css("display", "inline");
             $("#headSearchContent").css("display", "none");
+        });
+        $('#headSearchQueryContent').bind('keyup', function (event) {
+            if (event.keyCode == "13") {
+                var queryStr = $(this).val();
+                alert(queryStr);
+            }
         });
     </script>
     @RenderSection("Scripts", required: false)

@@ -38,5 +38,12 @@ namespace RaeClass.Controllers
             return View();
         }
 
+        public IActionResult FormContentSearch(string queryStr)
+        {
+            if (string.IsNullOrEmpty(queryStr)) queryStr = string.Empty;
+            ViewData["queryStr"] = queryStr;
+            return View();
+        }
+
     }
 }

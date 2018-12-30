@@ -5,7 +5,7 @@ z-index: 999
 }
 
 .parts-floating[data-position] {
-margin: 30px
+margin: 15px
 }
 
 .parts-floating[data-movestate=false] {
