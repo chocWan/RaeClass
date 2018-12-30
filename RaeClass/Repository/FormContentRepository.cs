@@ -47,10 +47,18 @@ namespace RaeClass.Repository
             return res;
         }
 
-        public Task<int> UpdateAsync(FormContent formContent)
+        public async Task<FormContent> UpdateAsync(FormContent formContent)
         {
             UpdateBaseFormContent(formContent);
-            return context.SaveChangesAsync();
+            int res = await context.SaveChangesAsync();
+            if (res == 1)
+            {
+                return formContent;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private void UpdateBaseFormContent(FormContent formContent)
@@ -184,15 +192,14 @@ namespace RaeClass.Repository
 
         private void FillFormContent(RaeClassContentType contentType,ref FormContent formContent)
         {
-            formContent._id = "";
             formContent._openid = CONST.WX_OPENID;
             formContent.fnumber = serialNumberRepository.GetSerialNumber(contentType);
             formContent.fcreateTime = DateTime.Now.ToString();
             formContent.fcreateBy = CONST.CREATOR;
             formContent.fmodifyTime = DateTime.Now.ToString();
             formContent.fmodifyBy = CONST.CREATOR;
-            formContent.frecordFileId1 = CommonUtils.GetRecordFilePrefix(contentType) + formContent.frecordFileId1;
-            formContent.frecordFileId2 = CommonUtils.GetRecordFilePrefix(contentType) + formContent.frecordFileId2;
+            formContent.frecordFileId1 = formContent.frecordFileId1;
+            formContent.frecordFileId2 = formContent.frecordFileId2;
         }
 
         private void FillFormContents(RaeClassContentType contentType, ref List<FormContent> formContents)

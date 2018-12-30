@@ -17,7 +17,7 @@ function $postJSONSync(url, data, callback, global) {
         dataType: 'json',
         data: data,
         async: false, //是否异步
-        global: (global == false ? global : true),
+        global: (global === false ? global : true),
         success: callback
     });
 }
@@ -41,7 +41,7 @@ function $getJSONSync(url, data, callback, global) {
         dataType: 'json',
         data: data,
         async: false, //是否异步
-        global: (global == false ? global : true),
+        global: (global === false ? global : true),
         success: callback
     });
 }
@@ -57,7 +57,7 @@ function getUrlVars(name) {
     return vars[name];
 }
 
-function $alertWarning(type, message, callback) {
+function $alertWarning(message, callback) {
     var msgWindow = '<div class=\"modal fade\" data-backdrop=\"static\">'
         + '  <div class=\"modal-dialog\">'
         + '    <div class=\"modal-content\">'
@@ -76,22 +76,11 @@ function $alertWarning(type, message, callback) {
         + '</div>';
 
     $(msgWindow).modal('show').on('hidden.bs.modal', function (e) {
-        if (type == 1) {//1:Exec Success
-            if (callback != undefined && typeof callback == "function") {
-                try {
-                    callback();
-                }
-                catch (e) { }
+        if (callback !== undefined && typeof callback === "function") {
+            try {
+                callback();
             }
-            KStarForm.autoClose();
-        }
-        else {
-            if (callback != undefined && typeof callback == "function") {
-                try {
-                    callback();
-                }
-                catch (e) { }
-            }
+            catch (e) { throw e;}
         }
     });
 }
@@ -131,17 +120,23 @@ DocStatus = {
     AUDIT: "C",
 };
 
+MessType = {
+    SUCCESS: 1,
+    ERROR:2
+};
+
 UrlHelper = {
-    getUrl : function (actionName) {
+    getUrl: function (actionName) {
         return "http://localhost:5000/api/FormContent/" + actionName;
     },
     GET: "http://localhost:5000/api/FormContent/",
-}
+};
 
 RaeClassForm = {
     formContent: {},
     formContentType: null,
     IsListMode: false,
+    SeletedNumbers:[],
     init: function () {
         RaeClassForm.AddFloatingTool();
         RaeClassForm.BindToolEvent();
@@ -169,30 +164,21 @@ RaeClassForm = {
         $("#fcreateTime").val(RaeClassForm.formContent.fcreateTime);
         $("#frecordFileId1").val(RaeClassForm.formContent.frecordFileId1);
         $("#frecordFileId2").val(RaeClassForm.formContent.frecordFileId2);
-        if (RaeClassForm.formContent.fdocStatus == DocStatus.FORBID) {
+        if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
             RaeClassForm.setFormHeadDisabled();
-            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE]);
-        } else {
-            RaeClassForm.HideFloatingTool([ToolName.UNFREEZE]);
-        }
-        if (RaeClassForm.formContent.fdocStatus == DocStatus.AUDIT) {
-            RaeClassForm.HideFloatingTool([ToolName.AUDIT]);
-        }
-        if (RaeClassForm.formContent.fdocStatus == DocStatus.SAVE) {
-            RaeClassForm.HideFloatingTool([ToolName.REAUDIT]);
         }
         $_ueditor_cn.ready(function () {
-            if (RaeClassForm.formContent != null) {
+            if (RaeClassForm.formContent !== null) {
                 $_ueditor_cn.execCommand('insertHtml', RaeClassForm.formContent.fcnContent);
-                if (RaeClassForm.formContent.fdocStatus == DocStatus.FORBID) {
+                if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
                     $_ueditor_cn.setDisabled();
                 }
             }
         });
         $_ueditor_en.ready(function () {
-            if (RaeClassForm.formContent != null) {
+            if (RaeClassForm.formContent !== null) {
                 $_ueditor_en.execCommand('insertHtml', RaeClassForm.formContent.fenContent);
-                if (RaeClassForm.formContent.fdocStatus == DocStatus.FORBID) {
+                if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
                     $_ueditor_en.setDisabled();
                 }
             }
@@ -210,6 +196,7 @@ RaeClassForm = {
         return RaeClassForm.formContent;
     },
     setFormHeadDisabled: function () {
+        if (RaeClassForm.IsListMode) return;
         $("#fname").attr("disabled", "disabled");
         $("#flevel").attr("disabled", "disabled");
         $("#fcreateTime").attr("disabled", "disabled");
@@ -217,6 +204,7 @@ RaeClassForm = {
         $("#frecordFileId2").attr("disabled", "disabled");
     },
     setFormDisabled: function () {
+        if (RaeClassForm.IsListMode) return;
         $("#fname").attr("disabled", "disabled");
         $("#flevel").attr("disabled", "disabled");
         $("#fcreateTime").attr("disabled", "disabled");
@@ -226,6 +214,7 @@ RaeClassForm = {
         UE.getEditor('editor_EN').setDisabled();
     },
     setFormEnabled: function () {
+        if (RaeClassForm.IsListMode) return;
         $("#fname").removeAttr('disabled');
         $("#flevel").removeAttr('disabled');
         $("#fcreateTime").removeAttr('disabled');
@@ -233,6 +222,66 @@ RaeClassForm = {
         $("#frecordFileId2").removeAttr('disabled');
         UE.getEditor('editor_CN').setEnabled();
         UE.getEditor('editor_EN').setEnabled();
+    },
+    initFloatToolVisibility: function () {
+        if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
+            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE]);
+        } else {
+            RaeClassForm.HideFloatingTool([ToolName.UNFREEZE]);
+        }
+        if (RaeClassForm.formContent.fdocStatus === DocStatus.AUDIT) {
+            RaeClassForm.HideFloatingTool([ToolName.AUDIT]);
+        }
+        if (RaeClassForm.formContent.fdocStatus === DocStatus.SAVE) {
+            RaeClassForm.HideFloatingTool([ToolName.REAUDIT]);
+        }
+        if (RaeClassForm.IsListMode === true) {
+            RaeClassForm.ShowFloatingTool([ToolName.UNFREEZE]);
+            RaeClassForm.HideFloatingTool([ToolName.SAVE]);
+        }
+    },
+    updateFloatToolVisibilityByDocStatus: function (docStatus) {
+        if (isNullOrEmpty(docStatus) || RaeClassForm.IsListMode) return;
+        if (docStatus === DocStatus.SAVE) {
+            RaeClassForm.HideFloatingTool([ToolName.REAUDIT, ToolName.UNFREEZE]);
+            RaeClassForm.ShowFloatingTool([ToolName.SAVE, ToolName.AUDIT , ToolName.UNFREEZE]);
+        }
+        else if (docStatus === DocStatus.AUDIT) {
+            RaeClassForm.ShowFloatingTool([ToolName.REAUDIT]);
+            RaeClassForm.HideFloatingTool([ToolName.AUDIT]);
+        }
+        else if (docStatus === DocStatus.REAUDIT) {
+            RaeClassForm.HideFloatingTool([ToolName.REAUDIT]);
+            RaeClassForm.ShowFloatingTool([ToolName.AUDIT]);
+        }
+        else if (docStatus === DocStatus.FORBID) {
+            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE]);
+            RaeClassForm.ShowFloatingTool([ToolName.UNFREEZE]);
+        }
+        else {
+            return;
+        }
+    },
+    isFormDataChange: function () {
+        if (RaeClassForm.formContent.fname !== $("#fname").val()) return true;
+        if (RaeClassForm.formContent.flevel !== $("#flevel").val()) return true;
+        if (RaeClassForm.formContent.frecordFileId1 !== $("#frecordFileId1").val()) return true;
+        if (RaeClassForm.formContent.frecordFileId2 !== $("#frecordFileId2").val()) return true;
+        if (RaeClassForm.formContent.fcnContent !== UE.getEditor('editor_CN').getContent()) return true;
+        if (RaeClassForm.formContent.fenContent !== UE.getEditor('editor_EN').getContent()) return true;
+    },
+    updateSelectedNumbers: function (type, datas) {
+        if (type.indexOf('uncheck') === -1) {
+            $.each(datas, function (i, v) {
+                // 添加时，判断一行或多行的 id 是否已经在数组里 不存则添加　
+                RaeClassForm.SeletedNumbers.indexOf(v.fnumber) === -1 ? RaeClassForm.SeletedNumbers.push(v.fnumber) : -1;
+            });
+        } else {
+            $.each(datas, function (i, v) {
+                RaeClassForm.SeletedNumbers.splice(RaeClassForm.SeletedNumbers.indexOf(v.fnumber), 1);    //删除取消选中行
+            });
+        }
+        console.log(RaeClassForm.SeletedNumbers);
     },
     /* ToolButtons */
     $formSaveButton: $('#' + ToolName.SAVE),
@@ -246,88 +295,112 @@ RaeClassForm = {
     /* ToolButtonsEvent */
     formSave: function () {
         $postJSON(UrlHelper.getUrl("Save"), { contentType: RaeClassForm.formContentType, formContent: RaeClassForm.getContentDataByForm() }, function (data) {
-            if (data.isOk) {
-                alert("ok");
-                RaeClassForm.formContent = data.content.result;
-                setFormByContent();
+            if (data.isok) {
+                RaeClassForm.formContent = data.content;
+                RaeClassForm.updateFloatToolVisibilityByDocStatus(DocStatus.SAVE);
+                $alertWarning("保存成功！");
             }
-            else { alert("error"); }
+            else {
+                $alertWarning("保存失败！" + data.errmsg);
+            }
         });
     },
     formAudit: function () {
         var fnumbers = [];
         if (RaeClassForm.IsListMode) {
-
+            fnumbers = RaeClassForm.SeletedNumbers;
+            if (fnumbers.length === 0) {
+                $alertWarning("未选中行！");
+                return;
+            }
         } else {
+            if (RaeClassForm.isFormDataChange()) {
+                $alertWarning("页面内容已发生改变，请先保存！");
+                return;
+            }
             fnumbers.push(RaeClassForm.formContent.fnumber);
         }
         $postJSON(UrlHelper.getUrl("Audit"), { fnumbers: fnumbers }, function (data) {
-            if (data.isOk) {
-                RaeClassForm.ShowFloatingTool([ToolName.REAUDIT]);
-                RaeClassForm.HideFloatingTool([ToolName.AUDIT]);
-                alert("ok");
+            if (data.isok) {
+                RaeClassForm.updateFloatToolVisibilityByDocStatus(DocStatus.AUDIT);
+                $alertWarning("审核成功！");
             }
-            else { alert("error"); }
+            else {
+                $alertWarning("审核失败！" + data.errmsg);
+            }
         });
     },
     formReAudit: function () {
         var fnumbers = [];
         if (RaeClassForm.IsListMode) {
-
+            fnumbers = RaeClassForm.SeletedNumbers;
+            if (fnumbers.length === 0) {
+                $alertWarning("未选中行！");
+                return;
+            }
         } else {
             fnumbers.push(RaeClassForm.formContent.fnumber);
         }
         $postJSON(UrlHelper.getUrl("ReAudit"), { fnumbers: fnumbers }, function (data) {
-            if (data.isOk) {
-                RaeClassForm.HideFloatingTool([ToolName.REAUDIT]);
-                RaeClassForm.ShowFloatingTool([ToolName.AUDIT]);
-                alert("ok");
+            if (data.isok) {
+                RaeClassForm.updateFloatToolVisibilityByDocStatus(DocStatus.REAUDIT);
+                $alertWarning("反审核成功！");
             }
-            else { alert("error"); }
-        });
-    },
-    formExport: function () {
-        var fnumbers = [];
-        if (RaeClassForm.IsListMode) {
-
-        } else {
-            fnumbers.push(RaeClassForm.formContent.fnumber);
-        }
-        window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?fnumbers=" + fnumbers.join(",");
-    },
-    formUnFreeze: function () {
-        var fnumbers = [];
-        if (RaeClassForm.IsListMode) {
-
-        } else {
-            fnumbers.push(RaeClassForm.formContent.fnumber);
-        }
-        $postJSON(UrlHelper.getUrl("UnFreeze"), { fnumbers: fnumbers }, function (data) {
-            if (data.isOk) {
-                RaeClassForm.setFormEnabled();
-                RaeClassForm.ShowFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.FREEZE]);
-                RaeClassForm.HideFloatingTool([ToolName.UNFREEZE]);
-                alert("ok");
-            }
-            else { alert("error"); }
+            else { $alertWarning("反审核失败！" + data.errmsg); }
         });
     },
     formFreeze: function () {
         var fnumbers = [];
         if (RaeClassForm.IsListMode) {
-
+            fnumbers = RaeClassForm.SeletedNumbers;
+            if (fnumbers.length === 0) {
+                $alertWarning("未选中行！");
+                return;
+            }
         } else {
             fnumbers.push(RaeClassForm.formContent.fnumber);
         }
         $postJSON(UrlHelper.getUrl("Freeze"), { fnumbers: fnumbers }, function (data) {
-            if (data.isOk) {
+            if (data.isok) {
                 RaeClassForm.setFormDisabled();
-                RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE]);
-                RaeClassForm.ShowFloatingTool([ToolName.UNFREEZE]);
-                alert("ok");
+                RaeClassForm.updateFloatToolVisibilityByDocStatus(DocStatus.FORBID);
+                $alertWarning("冻结成功！");
             }
-            else { alert("error"); }
+            else { $alertWarning("冻结失败！" + data.errmsg); }
         });
+    },
+    formUnFreeze: function () {
+        var fnumbers = [];
+        if (RaeClassForm.IsListMode) {
+            fnumbers = RaeClassForm.SeletedNumbers;
+            if (fnumbers.length === 0) {
+                $alertWarning("未选中行！");
+                return;
+            }
+        } else {
+            fnumbers.push(RaeClassForm.formContent.fnumber);
+        }
+        $postJSON(UrlHelper.getUrl("UnFreeze"), { fnumbers: fnumbers }, function (data) {
+            if (data.isok) {
+                RaeClassForm.setFormEnabled();
+                RaeClassForm.updateFloatToolVisibilityByDocStatus(DocStatus.SAVE);
+                $alertWarning("解冻成功！");
+            }
+            else { $alertWarning("解冻失败！" + data.errmsg); }
+        });
+    },
+    formExport: function () {
+        var fnumbers = [];
+        if (RaeClassForm.IsListMode) {
+            fnumbers = RaeClassForm.SeletedNumbers;
+            if (fnumbers.length === 0) {
+                $alertWarning("未选中行！");
+                return;
+            }
+        } else {
+            fnumbers.push(RaeClassForm.formContent.fnumber);
+        }
+        window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?contentType=" + RaeClassForm.formContentType +"&fnumbers=" + fnumbers.join(",");
     },
     AddFloatingTool: function (toolArr) {
         var account = [];
@@ -368,7 +441,7 @@ RaeClassForm = {
         //RaeClassForm.$formExportButton.bind("click", RaeClassForm.formExport);
         $("#" + ToolName.SAVE).bind("click", RaeClassForm.formSave);
         $("#" + ToolName.AUDIT).bind("click", RaeClassForm.formAudit);
-        $("#" + ToolName.REAUDIT).bind("click", RaeClassForm.formREAUDIT);
+        $("#" + ToolName.REAUDIT).bind("click", RaeClassForm.formReAudit);
         $("#" + ToolName.EXPORT).bind("click", RaeClassForm.formExport);
         $("#" + ToolName.UNFREEZE).bind("click", RaeClassForm.formUnFreeze);
         $("#" + ToolName.FREEZE).bind("click", RaeClassForm.formFreeze);
@@ -465,7 +538,7 @@ UEditorUtils = {
         var div = document.getElementById('btns');
         var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
         for (var i = 0, btn; btn = btns[i++];) {
-            if (btn.id == str) {
+            if (btn.id === str) {
                 UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
             } else {
                 btn.setAttribute("disabled", "true");

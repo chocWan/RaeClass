@@ -9,8 +9,16 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-table.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-treeview.css" />
         <link href="~/css/RaeClassForm.css" rel="stylesheet" />
+        <link href="~/lib/jquery-float/iconfont.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
+    <style>
+        input:focus {
+            outline: none;
+            border-color: #9ecaed;
+            box-shadow: 0 0 10px #9ecaed;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,21 +27,29 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar">1</span>
+                    <span class="icon-bar">1</span>
+                    <span class="icon-bar">1</span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">RaeClass</a>
+                <a href="/RaeClassMS" class="navbar-brand">RaeClass</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/RaeClassMS">Index</a></li>
+                <ul class="nav navbar-nav" id="headCategory">
                     <li><a href="/RaeClassMS/FormContent?contentType=Read">Read</a></li>
                     <li><a href="/RaeClassMS/FormContent?contentType=Listent">Listent</a></li>
                     <li><a href="/RaeClassMS/FormContent?contentType=Spoken">Spoken</a></li>
                     <li><a href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
                 </ul>
+                <div id="headSearchContent" style="display:none;line-height:50px;color:#ffffff">
+                    <input id="headSearchQueryContent" style="width:1000px;padding:0px;margin:0px;border-bottom-width: 0px;border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;background:#222222" name="headSearch" placeholder="请输入查询条件" />
+                </div>
+                <div style="float:right;display:inline;">
+                    <ul class="nav navbar-nav">
+                        <li><a id="headSearch" href="javascript:volid(0);"><i class="iconfont icon-Search"></i></a></li>
+                    </ul>
+                </div>
             </div>
+
         </div>
     </nav>
     <div class="container body-content">
@@ -57,6 +73,18 @@
     <script type="text/javascript">
         $(function () {
             RaeClassForm.init();
+            RaeClassForm.initFloatToolVisibility();
+        });
+    </script>
+    <script type="text/javascript">
+        $("#headSearch").click(function () {
+            $("#headCategory").css("display", "none");
+            $("#headSearchContent").css("display", "inline");
+            $("#headSearchQueryContent").focus();
+        });
+        $("#headSearchQueryContent").blur(function () {
+            $("#headCategory").css("display", "inline");
+            $("#headSearchContent").css("display", "none");
         });
     </script>
     @RenderSection("Scripts", required: false)

@@ -6,6 +6,7 @@ using RaeClass.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RaeClass.Api
@@ -56,22 +57,23 @@ namespace RaeClass.Api
         [HttpPost("Save")]
         public async Task<JsonResult> Save(RaeClassContentType contentType, FormContent formContent)
         {
+            FormContent _formContent = null;
             if (string.IsNullOrEmpty(formContent.fnumber))
             {
-                FormContent _formContent = await formContentRepository.AddAsync(contentType, formContent);
-                if (_formContent != null) return Json(new { IsOk = true , content = _formContent });
-                else return Json(new { IsOk = false });
+                _formContent = await formContentRepository.AddAsync(contentType, formContent);
             }
             else {
-                if (!formContent.fdocStatus.Equals(DocStatus.SAVE) || !formContent.fdocStatus.Equals(DocStatus.AUDIT))
+                if (!formContent.fdocStatus.Equals(DocStatus.SAVE) && !formContent.fdocStatus.Equals(DocStatus.AUDIT))
                 {
-                    throw new Exception("can not save!");
+                    string msg = "只有保存或审核状态才允许保存，此文章不符合该条件！";
+                    return Json(new { isok = false ,errmsg = msg });
                 }
                 formContent.fdocStatus = DocStatus.SAVE;
-                int res = await formContentRepository.UpdateAsync(formContent);
-                if (res == 1) return Json(new { IsOk = true });
-                else return Json(new { IsOk = false });
+                _formContent = await formContentRepository.UpdateAsync(formContent);
             }
+
+            if (_formContent != null) return Json(new { isok = true, content = _formContent });
+            else return Json(new { isok = false });
         }
 
         [HttpPost("SubmitWithContent")]
@@ -83,7 +85,7 @@ namespace RaeClass.Api
 
             var querySubmit = formContents.Where(x => string.IsNullOrEmpty(x.fnumber));
             int submitCount = await formContentRepository.UpdateListAsync(formContents);
-            return Json(new { IsOk = true });
+            return Json(new { isok = true });
         }
 
         [HttpPost("Audit")]
@@ -94,11 +96,12 @@ namespace RaeClass.Api
 
             if (res.Length > 0)
             {
-                throw new Exception("there are doc being save status or forbid status,please save first or unFreeze first !" + string.Join(",", res));
+                string msg = "只有状态为保存的文章才能提交，以下文章编号不符合条件：" + string.Join(",", res);
+                return Json(new { isok = false,errmsg = msg });
             }
 
             int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.AUDIT);
-            return Json(new { IsOk = true });
+            return Json(new { isok = true });
         }
 
         [HttpPost("ReAudit")]
@@ -109,11 +112,12 @@ namespace RaeClass.Api
 
             if (res.Length > 0)
             {
-                throw new Exception("there are doc being save status or forbid status,please save first or unFreeze first !" + string.Join(",", res));
+                string msg = "只有审核状态下的文章才允许反审核，以下文章不符合该条件：" + string.Join(",", res);
+                return Json(new { isok = false, errmsg = msg });
             }
 
-            int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.AUDIT);
-            return Json(new { IsOk = true });
+            int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.SAVE);
+            return Json(new { isok = true });
         }
 
         [HttpPost("UnFreeze")]
@@ -124,28 +128,34 @@ namespace RaeClass.Api
 
             if (res.Length > 0)
             {
-                throw new Exception("there are doc being not forbid status !" + string.Join(",", res));
+                string msg = "只有冻结状态下的文章才允许解冻，以下文章不符合该条件：" + string.Join(",", res);
+                return Json(new { isok = false, errmsg = msg });
             }
 
             int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.SAVE);
-            return Json(new { IsOk = true });
+            return Json(new { isok = true });
         }
 
         [HttpPost("Freeze")]
         public async Task<JsonResult> Freeze(List<string> fnumbers)
         {
             int submitCount = await formContentRepository.UpdateDocStatusListAsync(fnumbers, DocStatus.FORBID);
-            return Json(new { IsOk = true });
+            return Json(new { isok = true });
         }
 
         [HttpGet("DownLoadJsonFile")]
-        public async Task<FileResult> DownLoadJsonFile(string fnumbers)
+        public async Task<FileResult> DownLoadJsonFile(RaeClassContentType contentType, string fnumbers)
         {
+            StringBuilder sb = new StringBuilder();
             List<string> _fnumbers = fnumbers.Split(',').ToList();
             List<FormContent> formContens= await formContentRepository.GetFormContentListAsync(_fnumbers);
-            string json = JsonHelper.SerializeObject(formContens);
-            byte[] fileContents = System.Text.Encoding.Default.GetBytes(json);
-            return File(fileContents, System.Net.Mime.MediaTypeNames.Application.Octet, "read.json"); //关键语句
+            formContens.Where(x=>x.fdocStatus.Equals(DocStatus.AUDIT)).ToList().ForEach(item => {
+                item.frecordFileId1 = CommonUtils.GetRecordFilePrefix(contentType) + item.frecordFileId1;
+                item.frecordFileId2 = CommonUtils.GetRecordFilePrefix(contentType) + item.frecordFileId2;
+                sb.AppendLine(JsonHelper.SerializeObject(item));
+            });
+            byte[] fileContents = System.Text.Encoding.Default.GetBytes(sb.ToString());
+            return File(fileContents, System.Net.Mime.MediaTypeNames.Application.Octet, contentType +"-[" + DateTime.Now.ToString() + "].json"); //关键语句
         }
 
     }

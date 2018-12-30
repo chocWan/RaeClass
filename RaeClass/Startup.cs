@@ -97,7 +97,6 @@ namespace RaeClass
             for (int i = 0; i < 10; i++)
             {
                 FormContent read = new FormContent();
-                read._id = "";
                 read._openid = "oT_iO4tBijzyXT91iOW6wmGF801Q";
                 read.fcreateBy = "choc";
                 read.fcreateTime = DateTime.Now.ToString();
