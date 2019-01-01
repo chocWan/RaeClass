@@ -97,6 +97,7 @@ namespace RaeClass
             for (int i = 0; i < 10; i++)
             {
                 FormContent read = new FormContent();
+                read.id = Guid.NewGuid().ToString();
                 read._openid = "oT_iO4tBijzyXT91iOW6wmGF801Q";
                 read.fcreateBy = "choc";
                 read.fcreateTime = DateTime.Now.ToString();
@@ -104,8 +105,8 @@ namespace RaeClass
                 read.flevel = "1";
                 read.fcnContent = "<p><br/></p><article><p><span style=\"color: rgb(79, 129, 189); \"><strong>版权声明：如果该文章对你有帮助,请为我打c</strong></span>all	https://blog.csdn.net/voke_/article/details/76418116</p><p style=\"box - sizing: border - box; outline: 0px; margin - top: 0px; margin - bottom: 16px; padding: 0px; font - size: 16px; color: rgb(79, 79, 79); line - height: 26px; overflow - wrap: break-word; \"><br/></p></article><p><br/></p><p><br/></p>";
                 read.fenContent = "<p><br/></p><article><p><span style=\"color: rgb(79, 129, 189); \"><strong>版权声明：如果该文章对你有帮助,请为我打c</strong></span>all	https://blog.csdn.net/voke_/article/details/76418116</p><p style=\"box - sizing: border - box; outline: 0px; margin - top: 0px; margin - bottom: 16px; padding: 0px; font - size: 16px; color: rgb(79, 79, 79); line - height: 26px; overflow - wrap: break-word; \"><br/></p></article><p><br/></p><p><br/></p>";
-                read.frecordFileId1 = CONST.WX_READ_RECORD_PREFIX + "xty.mp3";
-                read.frecordFileId2 = CONST.WX_READ_RECORD_PREFIX + "xty.mp3";
+                read.frecordFileId1 = "xty.mp3";
+                read.frecordFileId2 = "xty.mp3";
                 read.fnumber = "Read20181124001"+i;
                 read.fname = "choc test init" +i;
                 read.fmodifyBy = "choc";

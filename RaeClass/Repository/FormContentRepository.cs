@@ -162,11 +162,17 @@ namespace RaeClass.Repository
             else return new List<FormContent>();
         }
 
-        public FormContent GetEmptyFormContent()
+        public Task<FormContent> GetEmptyFormContent()
         {
             var formContent = new FormContent();
             formContent.fdocStatus = DocStatus.SAVE;
-            return new FormContent(); 
+            formContent.id = Guid.NewGuid().ToString();
+            formContent._openid = CONST.WX_OPENID;
+            formContent.fcreateTime = DateTime.Now.ToString();
+            formContent.fcreateBy = CONST.CREATOR;
+            formContent.fmodifyTime = DateTime.Now.ToString();
+            formContent.fmodifyBy = CONST.CREATOR;
+            return Task.Factory.StartNew(() => formContent);
         }
 
         private BaseFormContent GetBaseFormContent(RaeClassContentType contentType, FormContent formContent)
@@ -192,12 +198,7 @@ namespace RaeClass.Repository
 
         private void FillFormContent(RaeClassContentType contentType,ref FormContent formContent)
         {
-            formContent._openid = CONST.WX_OPENID;
             formContent.fnumber = serialNumberRepository.GetSerialNumber(contentType);
-            formContent.fcreateTime = DateTime.Now.ToString();
-            formContent.fcreateBy = CONST.CREATOR;
-            formContent.fmodifyTime = DateTime.Now.ToString();
-            formContent.fmodifyBy = CONST.CREATOR;
             formContent.frecordFileId1 = formContent.frecordFileId1;
             formContent.frecordFileId2 = formContent.frecordFileId2;
         }

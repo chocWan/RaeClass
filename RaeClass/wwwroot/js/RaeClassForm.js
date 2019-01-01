@@ -141,21 +141,19 @@ RaeClassForm = {
     IsAddMode: false,
     SeletedNumbers:[],
     init: function () {
-        RaeClassForm.AddFloatingTool();
-        RaeClassForm.BindToolEvent();
+        RaeClassForm.addFloatingTool();
+        RaeClassForm.bindToolEvent();
+        RaeClassForm.updateNavBannerView();
     },
     initFormContent: function (fnumber) {
         RaeClassForm.isAddMode = isNullOrEmpty(fnumber);
         var url = RaeClassForm.isAddMode ? UrlHelper.getUrl("GetEmptyFormContent") : UrlHelper.getUrl("GetFormContent");
         var data = RaeClassForm.isAddMode ? null : { fnumber: fnumber };
         $getJSONSync(url, { fnumber: fnumber }, function (data) {
-            RaeClassForm.formContent = data.content.result;
+            RaeClassForm.formContent = data.content;
         });
-        //修改模式
-        if (!RaeClassForm.isAddMode) {
-            RaeClassForm.setFormByContent();
-        }
-        RaeClassForm.AddPageScroll();
+        RaeClassForm.setFormByContent();
+        RaeClassForm.addPageScroll();
     },
     setFormByContent: function () {
         var $_ueditor_cn = UE.getEditor('editor_CN');
@@ -185,7 +183,6 @@ RaeClassForm = {
                 }
             }
         });
-        
     },
     getContentDataByForm : function () {
         RaeClassForm.formContent.fname = $("#fname").val();
@@ -228,28 +225,28 @@ RaeClassForm = {
     initFloatToolVisibility: function () {
         if (RaeClassForm.IsListMode === false) {
             if (RaeClassForm.isAddMode === true) {
-                RaeClassForm.HideFloatingTool([ToolName.AUDIT, ToolName.ADD, ToolName.REAUDIT, ToolName.FREEZE, , ToolName.UNFREEZE, ToolName.EXPORT]);
+                RaeClassForm.hideFloatingTool([ToolName.AUDIT, ToolName.ADD, ToolName.REAUDIT, ToolName.FREEZE, , ToolName.UNFREEZE, ToolName.EXPORT]);
                 return;
             }
             if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
-                RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, ToolName.ADD]);
+                RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, ToolName.ADD, ToolName.EXPORT]);
             }
             if (RaeClassForm.formContent.fdocStatus === DocStatus.AUDIT) {
-                RaeClassForm.HideFloatingTool([ToolName.AUDIT, ToolName.ADD]);
+                RaeClassForm.hideFloatingTool([ToolName.AUDIT, ToolName.ADD, ToolName.UNFREEZE]);
             }
             if (RaeClassForm.formContent.fdocStatus === DocStatus.SAVE) {
-                RaeClassForm.HideFloatingTool([ToolName.REAUDIT, ToolName.ADD]);
+                RaeClassForm.hideFloatingTool([ToolName.REAUDIT, ToolName.ADD, ToolName.UNFREEZE, ToolName.EXPORT]);
             }
             return;
         }
         if (RaeClassForm.IsListMode === true) {
             if (RaeClassForm.IsListMode === true) {
-                RaeClassForm.HideFloatingTool([ToolName.SAVE]);
+                RaeClassForm.hideFloatingTool([ToolName.SAVE]);
             }
             return;
         }
         if (RaeClassForm.IsQueryMode === true) {
-            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.ADD]);
+            RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.ADD]);
             return;
         }
         
@@ -257,20 +254,20 @@ RaeClassForm = {
     updateFloatToolVisibilityByDocStatus: function (docStatus) {
         if (isNullOrEmpty(docStatus) || RaeClassForm.IsListMode) return;
         if (docStatus === DocStatus.SAVE) {
-            RaeClassForm.HideFloatingTool([ToolName.REAUDIT, ToolName.UNFREEZE]);
-            RaeClassForm.ShowFloatingTool([ToolName.SAVE, ToolName.AUDIT , ToolName.UNFREEZE]);
+            RaeClassForm.hideFloatingTool([ToolName.REAUDIT, ToolName.UNFREEZE, ToolName.EXPORT]);
+            RaeClassForm.showFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.FREEZE]);
         }
         else if (docStatus === DocStatus.AUDIT) {
-            RaeClassForm.ShowFloatingTool([ToolName.REAUDIT]);
-            RaeClassForm.HideFloatingTool([ToolName.AUDIT]);
+            RaeClassForm.showFloatingTool([ToolName.REAUDIT, ToolName.EXPORT]);
+            RaeClassForm.hideFloatingTool([ToolName.AUDIT]);
         }
         else if (docStatus === DocStatus.REAUDIT) {
-            RaeClassForm.HideFloatingTool([ToolName.REAUDIT]);
-            RaeClassForm.ShowFloatingTool([ToolName.AUDIT]);
+            RaeClassForm.hideFloatingTool([ToolName.REAUDIT]);
+            RaeClassForm.showFloatingTool([ToolName.AUDIT]);
         }
         else if (docStatus === DocStatus.FORBID) {
-            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE]);
-            RaeClassForm.ShowFloatingTool([ToolName.UNFREEZE]);
+            RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, ToolName.EXPORT]);
+            RaeClassForm.showFloatingTool([ToolName.UNFREEZE]);
         }
         else {
             return;
@@ -419,7 +416,7 @@ RaeClassForm = {
     formAdd: function () {
         window.location.href = "/RaeClassMS/FormContentDetail?contentType=" + RaeClassForm.formContentType
     },
-    AddFloatingTool: function (toolArr) {
+    addFloatingTool: function (toolArr) {
         var account = [];
         if (toolArr) {
             $.each(toolArr, function(index,item){
@@ -443,17 +440,17 @@ RaeClassForm = {
             }
         );
     },
-    HideFloatingTool: function (arr) {
+    hideFloatingTool: function (arr) {
         $.each(arr, function (index, item) {
             $("#" + item).hide();
         });
     },
-    ShowFloatingTool: function (arr) {
+    showFloatingTool: function (arr) {
         $.each(arr, function (index, item) {
             $("#" + item).show();
         });
     },
-    BindToolEvent: function () {
+    bindToolEvent: function () {
         //RaeClassForm.$formSaveButton.bind("click", RaeClassForm.formSave);
         //RaeClassForm.$formSubmitButton.bind("click", RaeClassForm.formSubmit);
         //RaeClassForm.$formExportButton.bind("click", RaeClassForm.formExport);
@@ -465,7 +462,7 @@ RaeClassForm = {
         $("#" + ToolName.FREEZE).bind("click", RaeClassForm.formFreeze);
         $("#" + ToolName.ADD).bind("click", RaeClassForm.formAdd);
     },
-    AddPageScroll: function () {
+    addPageScroll: function () {
         var pageIndexItem1 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};
         var pageIndexItem2 = { indexName: "文章内容-CN", refElementId:"formContent_CN"};
         var pageIndexItem3 = { indexName: "文章内容-EN", refElementId:"formContent_EN"};
@@ -475,6 +472,9 @@ RaeClassForm = {
                 "state": true, "moveState": true, "size": "auto", "position": "left-center", "pageIndexItems": pageIndexItems
             }
         );
+    },
+    updateNavBannerView: function () {
+        $("a[data-contentType='" + RaeClassForm.formContentType + "']").css("color","#ffffff");
     },
 };
 

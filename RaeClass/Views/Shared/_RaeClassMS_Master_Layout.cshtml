@@ -32,14 +32,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/RaeClassMS" class="navbar-brand">RaeClass</a>
+                <a href="/RaeClassMS" class="navbar-brand headNavItem">RaeClass</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" id="headCategory">
-                    <li><a id="Read" href="/RaeClassMS/FormContent?contentType=Read">Read</a></li>
-                    <li><a id="Listent" href="/RaeClassMS/FormContent?contentType=Listent">Listent</a></li>
-                    <li><a id="Spoken" href="/RaeClassMS/FormContent?contentType=Spoken">Spoken</a></li>
-                    <li><a id="Tech" href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
+                    <li><a data-contentType="Read" href="/RaeClassMS/FormContent?contentType=Read">Read</a></li>
+                    <li><a data-contentType="Listen" href="/RaeClassMS/FormContent?contentType=Listen">Listen</a></li>
+                    <li><a data-contentType="Spoken" href="/RaeClassMS/FormContent?contentType=Spoken">Spoken</a></li>
+                    <li><a data-contentType="Tech" href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
                 </ul>
                 <div id="headSearchContent" style="display:none;line-height:50px;color:#ffffff">
                     <input id="headSearchQueryContent" style="width:1000px;padding:0px;margin:0px;border-bottom-width: 0px;border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;background:#222222" name="headSearch" placeholder="请输入查询条件后，Enter键查询" />
@@ -50,7 +50,6 @@
                     </ul>
                 </div>
             </div>
-
         </div>
     </nav>
     <div class="container body-content">
@@ -92,7 +91,7 @@
                 var queryStr = $(this).val();
                 window.location.href = "/RaeClassMS/FormContentSearch?queryStr=" + queryStr ;
             }
-        });
+        });        
     </script>
     @RenderSection("Scripts", required: false)
 </body>

@@ -30,21 +30,21 @@ namespace RaeClass.Api
         }
 
         [HttpGet("GetFormContent")]
-        public JsonResult GetFormContent(string fnumber)
+        public async Task<JsonResult> GetFormContent(string fnumber)
         {
-            return Json(new { content = formContentRepository.GetFormContentAsync(fnumber) });
+            return Json(new { content = await formContentRepository.GetFormContentAsync(fnumber) });
         }
 
         [HttpGet("GetFormContentList")]
-        public JsonResult GetEmptyFormContentList(List<string> fnumbers)
+        public async Task<JsonResult> GetEmptyFormContentList(List<string> fnumbers)
         {
-            return Json(new { content = formContentRepository.GetFormContentListAsync(fnumbers) });
+            return Json(new { content = await formContentRepository.GetFormContentListAsync(fnumbers) });
         }
 
         [HttpGet("GetEmptyFormContent")]
-        public JsonResult GetEmptyFormContent()
+        public async Task<JsonResult> GetEmptyFormContent()
         {
-            return Json(new { content = formContentRepository.GetEmptyFormContent() });
+            return Json(new { content = await formContentRepository.GetEmptyFormContent() });
         }
 
         [HttpPost("Save")]

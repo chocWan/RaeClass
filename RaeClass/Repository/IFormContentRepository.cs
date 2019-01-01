@@ -17,6 +17,6 @@ namespace RaeClass.Repository
         Tuple<List<FormContent>, int> GetPageListAsync(RaeClassContentType raeClassContentType, string level, string titleOrContent, int pageindex, int pagesize);
         Task<FormContent> GetFormContentAsync(string fumber);
         Task<List<FormContent>> GetFormContentListAsync(List<string> fumbers);
-        FormContent GetEmptyFormContent();
+        Task<FormContent> GetEmptyFormContent();
     }
 }
