@@ -110,7 +110,8 @@ ToolName = {
     REAUDIT: "ReAudit",
     IMPORT:"Import",
     EXPORT:"Export",
-    GOTOP:"GoTop",
+    ADD:"Add",
+    GOTOP: "GoTop",
 };
 
 DocStatus = {
@@ -136,21 +137,22 @@ RaeClassForm = {
     formContent: {},
     formContentType: null,
     IsListMode: false,
+    IsQueryMode: false,
+    IsAddMode: false,
     SeletedNumbers:[],
     init: function () {
         RaeClassForm.AddFloatingTool();
         RaeClassForm.BindToolEvent();
     },
     initFormContent: function (fnumber) {
-        
-        var isAddMode = isNullOrEmpty(fnumber);
-        var url = isAddMode ? UrlHelper.getUrl("GetEmptyFormContent") : UrlHelper.getUrl("GetFormContent");
-        var data = isAddMode ? null : { fnumber: fnumber };
+        RaeClassForm.isAddMode = isNullOrEmpty(fnumber);
+        var url = RaeClassForm.isAddMode ? UrlHelper.getUrl("GetEmptyFormContent") : UrlHelper.getUrl("GetFormContent");
+        var data = RaeClassForm.isAddMode ? null : { fnumber: fnumber };
         $getJSONSync(url, { fnumber: fnumber }, function (data) {
             RaeClassForm.formContent = data.content.result;
         });
         //修改模式
-        if (!isAddMode) {
+        if (!RaeClassForm.isAddMode) {
             RaeClassForm.setFormByContent();
         }
         RaeClassForm.AddPageScroll();
@@ -224,21 +226,33 @@ RaeClassForm = {
         UE.getEditor('editor_EN').setEnabled();
     },
     initFloatToolVisibility: function () {
-        if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
-            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE]);
-        } else {
-            RaeClassForm.HideFloatingTool([ToolName.UNFREEZE]);
-        }
-        if (RaeClassForm.formContent.fdocStatus === DocStatus.AUDIT) {
-            RaeClassForm.HideFloatingTool([ToolName.AUDIT]);
-        }
-        if (RaeClassForm.formContent.fdocStatus === DocStatus.SAVE) {
-            RaeClassForm.HideFloatingTool([ToolName.REAUDIT]);
+        if (RaeClassForm.IsListMode === false) {
+            if (RaeClassForm.isAddMode === true) {
+                RaeClassForm.HideFloatingTool([ToolName.AUDIT, ToolName.ADD, ToolName.REAUDIT, ToolName.FREEZE, , ToolName.UNFREEZE, ToolName.EXPORT]);
+                return;
+            }
+            if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
+                RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, ToolName.ADD]);
+            }
+            if (RaeClassForm.formContent.fdocStatus === DocStatus.AUDIT) {
+                RaeClassForm.HideFloatingTool([ToolName.AUDIT, ToolName.ADD]);
+            }
+            if (RaeClassForm.formContent.fdocStatus === DocStatus.SAVE) {
+                RaeClassForm.HideFloatingTool([ToolName.REAUDIT, ToolName.ADD]);
+            }
+            return;
         }
         if (RaeClassForm.IsListMode === true) {
-            RaeClassForm.ShowFloatingTool([ToolName.UNFREEZE]);
-            RaeClassForm.HideFloatingTool([ToolName.SAVE]);
+            if (RaeClassForm.IsListMode === true) {
+                RaeClassForm.HideFloatingTool([ToolName.SAVE]);
+            }
+            return;
         }
+        if (RaeClassForm.IsQueryMode === true) {
+            RaeClassForm.HideFloatingTool([ToolName.SAVE, ToolName.ADD]);
+            return;
+        }
+        
     },
     updateFloatToolVisibilityByDocStatus: function (docStatus) {
         if (isNullOrEmpty(docStatus) || RaeClassForm.IsListMode) return;
@@ -402,6 +416,9 @@ RaeClassForm = {
         }
         window.location.href = UrlHelper.getUrl("DownLoadJsonFile") + "?contentType=" + RaeClassForm.formContentType +"&fnumbers=" + fnumbers.join(",");
     },
+    formAdd: function () {
+        window.location.href = "/RaeClassMS/FormContentDetail?contentType=" + RaeClassForm.formContentType
+    },
     AddFloatingTool: function (toolArr) {
         var account = [];
         if (toolArr) {
@@ -416,6 +433,7 @@ RaeClassForm = {
             account.push({ "type": ToolName.AUDIT, "tip": ToolName.AUDIT, "text": "", "url": "" });
             account.push({ "type": ToolName.REAUDIT, "tip": ToolName.REAUDIT, "text": "", "url": "" });
             account.push({ "type": ToolName.EXPORT, "tip": ToolName.EXPORT, "text": "", "url": "" });
+            account.push({ "type": ToolName.ADD, "tip": ToolName.ADD, "text": "", "url": "" });
             //account.push({ "type": ToolName.IMPORT, "tip": ToolName.IMPORT, "text": "", "url": "" });
             //account.push({ "type": ToolName.GOTOP, "tip": ToolName.GOTOP, "text": "", "url": "" });
         }
@@ -445,6 +463,7 @@ RaeClassForm = {
         $("#" + ToolName.EXPORT).bind("click", RaeClassForm.formExport);
         $("#" + ToolName.UNFREEZE).bind("click", RaeClassForm.formUnFreeze);
         $("#" + ToolName.FREEZE).bind("click", RaeClassForm.formFreeze);
+        $("#" + ToolName.ADD).bind("click", RaeClassForm.formAdd);
     },
     AddPageScroll: function () {
         var pageIndexItem1 = { indexName: "基本信息", refElementId:"formContentBaseInfo"};

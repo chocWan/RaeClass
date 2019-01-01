@@ -25,15 +25,8 @@ namespace RaeClass.Api
         [HttpGet]
         public JsonResult Get(RaeClassContentType contentType,string level, string titleOrContent, int pageindex = 1, int pagesize = 10)
         {
-            try
-            {
-                var res = formContentRepository.GetPageListAsync(contentType, level, titleOrContent, pageindex, pagesize);
-                return Json(new { total = res.Item2, rows = res.Item1 });
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            var res = formContentRepository.GetPageListAsync(contentType, level, titleOrContent, pageindex, pagesize);
+            return Json(new { total = res.Item2, rows = res.Item1 });
         }
 
         [HttpGet("GetFormContent")]

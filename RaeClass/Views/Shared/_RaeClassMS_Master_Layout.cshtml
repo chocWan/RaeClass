@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-table.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-treeview.css" />
         <link href="~/css/RaeClassForm.css" rel="stylesheet" />
+        <link href="~/lib/jquery-float/floating.css" rel="stylesheet" />
         <link href="~/lib/jquery-float/iconfont.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
@@ -27,9 +28,9 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar">1</span>
-                    <span class="icon-bar">1</span>
-                    <span class="icon-bar">1</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a href="/RaeClassMS" class="navbar-brand">RaeClass</a>
             </div>
@@ -41,11 +42,11 @@
                     <li><a id="Tech" href="/RaeClassMS/FormContent?contentType=Tech">Tech</a></li>
                 </ul>
                 <div id="headSearchContent" style="display:none;line-height:50px;color:#ffffff">
-                    <input id="headSearchQueryContent" style="width:1000px;padding:0px;margin:0px;border-bottom-width: 0px;border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;background:#222222" name="headSearch" placeholder="请输入查询条件" />
+                    <input id="headSearchQueryContent" style="width:1000px;padding:0px;margin:0px;border-bottom-width: 0px;border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;background:#222222" name="headSearch" placeholder="请输入查询条件后，Enter键查询" />
                 </div>
                 <div style="float:right;display:inline;">
                     <ul class="nav navbar-nav">
-                        <li><a id="headSearch" href="javascript:volid(0);"><i class="iconfont icon-Search"></i></a></li>
+                        <li><a id="headSearch" href="##"><i class="iconfont icon-Search"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -89,7 +90,7 @@
         $('#headSearchQueryContent').bind('keyup', function (event) {
             if (event.keyCode == "13") {
                 var queryStr = $(this).val();
-                alert(queryStr);
+                window.location.href = "/RaeClassMS/FormContentSearch?queryStr=" + queryStr ;
             }
         });
     </script>
