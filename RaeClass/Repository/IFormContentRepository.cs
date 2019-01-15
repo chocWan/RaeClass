@@ -18,5 +18,6 @@ namespace RaeClass.Repository
         Task<FormContent> GetFormContentAsync(string fumber);
         Task<List<FormContent>> GetFormContentListAsync(List<string> fumbers);
         Task<FormContent> GetEmptyFormContent();
+        List<ArticleGroupModel> GetArticlesQtyByDate(DateTime sDateTime, DateTime eDateTime);
     }
 }

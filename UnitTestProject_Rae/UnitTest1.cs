@@ -2,9 +2,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RaeClass.Helper;
 using RaeClass.Models;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace UnitTestProject_Rae
 {
@@ -46,8 +48,8 @@ namespace UnitTestProject_Rae
             var dt = DateTime.Now;
             StringBuilder sb = new StringBuilder();
             sb.Append(dt.Year.ToString());
-            sb.Append(dt.Month>10?dt.Month.ToString():"0" + dt.Month);
-            sb.Append(dt.Day>10?dt.Month.ToString():"0" + dt.Day);
+            sb.Append(dt.Month > 10 ? dt.Month.ToString() : "0" + dt.Month);
+            sb.Append(dt.Day > 10 ? dt.Month.ToString() : "0" + dt.Day);
             byte[] randomBytes = new byte[4];
             RNGCryptoServiceProvider rngServiceProvider = new RNGCryptoServiceProvider();
             rngServiceProvider.GetBytes(randomBytes);
@@ -76,6 +78,47 @@ namespace UnitTestProject_Rae
             //bool flag9 = Regex.IsMatch(null, @"^[+-]?\d*[.]?\d*$");
         }
 
-
+        [TestMethod]
+        public void TestGroupByDate()
+        {
+            List<TestModel> list = new List<TestModel>();
+            list.Add(new TestModel { FDate = DateTime.Now ,FLevel = 0});
+            list.Add(new TestModel { FDate = DateTime.Now.AddDays(1) ,FLevel = 0});
+            list.Add(new TestModel { FDate = DateTime.Now.AddDays(1) ,FLevel = 0});
+            list.Add(new TestModel { FDate = DateTime.Now.AddDays(1) ,FLevel = 1});
+            list.Add(new TestModel { FDate = DateTime.Now.AddDays(2), FLevel = 0 });
+            list.Add(new TestModel { FDate = DateTime.Now.AddDays(2), FLevel = 0 });
+            list.Add(new TestModel { FDate = DateTime.Now.AddDays(2), FLevel = 1 });
+            list.Add(new TestModel { FDate = DateTime.Now ,FLevel = 1});
+            var res = list.Select(x=> new {x.FDate,x.FLevel }).GroupBy(x=>new { Date = x.FDate.ToString("yyyy-MM-dd"),Level = x.FLevel})
+                .Select(x=>new {
+                    Date = x.Key.Date,
+                    Level = x.Key.Level,
+                    Count = x.Count(),
+            });
+            List<TestGroupModel> _list = new List<TestGroupModel>();
+            foreach (var item in res)
+            {
+                var _item = new TestGroupModel();
+                _item.Date = item.Date;
+                _item.Level = item.Level;
+                _item.Count = item.Count;
+                _list.Add(_item);
+            }
+        }
     }
+
+    public class TestModel
+    {
+        public DateTime FDate { set; get; }
+        public int FLevel { set; get; }
+    }
+
+    public class TestGroupModel
+    {
+        public string Date { set; get; }
+        public int Level { set; get; }
+        public int Count { set; get; }
+    }
+
 }

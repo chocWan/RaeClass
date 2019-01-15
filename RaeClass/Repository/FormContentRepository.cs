@@ -175,12 +175,29 @@ namespace RaeClass.Repository
             return Task.Factory.StartNew(() => formContent);
         }
 
-        private void GetArticlesQtyByDate(DateTime sDateTime,DateTime eDateTime)
+        public List<ArticleGroupModel> GetArticlesQtyByDate(DateTime sDateTime,DateTime eDateTime)
         {
-            var query = context.BaseFormContentSet.Where(x=>x.FCreateTime >= sDateTime && x.FCreateTime <= eDateTime);
-            //按天汇总
-            var group = query.Select(x=>x.FCreateTime);
+            List<ArticleGroupModel> list = new List<ArticleGroupModel>();
+            var res = context.BaseFormContentSet
+                .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(sDateTime.ToString("yyyy-MM-dd")) >= 0)
+                .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(eDateTime.ToString("yyyy-MM-dd")) <= 0)
+                .Select(x => new { x.FCreateTime, x.FLevel })
+                .GroupBy(x => new { DateStr = x.FCreateTime.ToString("yyyy-MM-dd"), Level = x.FLevel })
+                .Select(x => new {
+                    DateStr = x.Key.DateStr,
+                    Level = x.Key.Level,
+                    Count = x.Count(),
+                });
+            foreach (var item in res)
+            {
+                var _item = new ArticleGroupModel();
+                _item.DateStr = item.DateStr;
+                _item.Level = item.Level;
+                _item.Count = item.Count;
+                list.Add(_item);
+            }
 
+            return list;
         }
 
         private BaseFormContent GetBaseFormContent(RaeClassContentType contentType, FormContent formContent)

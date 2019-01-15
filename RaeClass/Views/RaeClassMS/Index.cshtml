@@ -14,13 +14,33 @@
         var initDataJunior = {};
         var initDataMiddle = {};
         var initDataHigh = {};
+        var articles = [{ Date: "2018-11-15", Count: 1, Level: "1" }, { Date: "2018-11-16", Count: 1, Level: "1" }];
+
         for (var i = 0; i < dateGap; i++) { 
             var key = moment().add(0 - i, "days").format("YYYY-MM-DD");
             initDataJunior[key] = 0;
             initDataJunior[initDataMiddle] = 0;
             initDataJunior[initDataHigh] = 0;
+
         }
         //获取近30天，每天新增的文章数量
+        var url = UrlHelper.getUrl("GetArticlesByDate");
+        var articles = null;
+        $getJSONSync(url, { dateGap: dateGap }, function (data) {
+            acticles = data.content;
+        });
+        for (var i = 0; i < articles.length; i++)
+        {
+            if (articles[i].Level === "1") { 
+
+            }
+            if (articles[i].Level === "2") {
+
+            }
+            if (articles[i].Level === "3") {
+
+            }
+        }
 
     </script>
     <script>

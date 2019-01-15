@@ -48,10 +48,11 @@ namespace RaeClass.Api
         }
 
         [HttpGet("GetArticlesByDate")]
-        public async Task<JsonResult> GetArticlesByDate(string sdate,string edate)
+        public JsonResult GetArticlesByDate(int dateGap)
         {
-
-            return Json(new { content = await formContentRepository.GetEmptyFormContent() });
+            DateTime sDate = DateTime.Now;
+            DateTime eDate = DateTime.Now.AddDays(0 - dateGap);
+            return Json(new { content = formContentRepository.GetArticlesQtyByDate(sDate,eDate) });
         }
 
         [HttpPost("Save")]
