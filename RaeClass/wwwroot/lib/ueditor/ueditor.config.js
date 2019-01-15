@@ -47,16 +47,15 @@
         //    'print', 'preview', 'searchreplace', 'drafts', 'help'
         //]]
         , toolbars: [[
-            'fullscreen', 'source', '|',
+            'fullscreen', '|',
             'undo', 'redo', '|',
             'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|',
-            'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+            'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', '|',
             'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
-            'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+            'fontfamily', 'fontsize', '|',
             'directionalityltr', 'directionalityrtl', 'indent', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
-            'touppercase', 'tolowercase', '|',
-            'insertimage', 'emotion',  'background', '|'
+            'touppercase', 'tolowercase'
         ]]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
         //,labelMap:{
@@ -110,6 +109,7 @@
 
         //启用自动保存
         //,enableAutoSave: true
+        ,enableAutoSave: false
         //自动保存间隔时间， 单位ms
         //,saveInterval: 500
 
@@ -379,7 +379,7 @@
 			abbr:   ['title', 'class', 'style'],
 			address: ['class', 'style'],
 			area:   ['shape', 'coords', 'href', 'alt'],
-			article: [],
+			//article: [],
 			aside:  [],
 			audio:  ['autoplay', 'controls', 'loop', 'preload', 'src', 'class', 'style'],
 			b:      ['class', 'style'],

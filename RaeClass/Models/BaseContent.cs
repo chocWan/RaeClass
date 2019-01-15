@@ -22,7 +22,7 @@ namespace RaeClass.Models
 
     public class FormContent
     {
-        public string id { set; get; }
+        public string _id { set; get; }
         public string _openid { set; get; }
         public string flevel { set; get; }
         public string fnumber { set; get; }

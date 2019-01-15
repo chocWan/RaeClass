@@ -166,13 +166,21 @@ namespace RaeClass.Repository
         {
             var formContent = new FormContent();
             formContent.fdocStatus = DocStatus.SAVE;
-            formContent.id = Guid.NewGuid().ToString();
+            formContent._id = Guid.NewGuid().ToString();
             formContent._openid = CONST.WX_OPENID;
             formContent.fcreateTime = DateTime.Now.ToString();
             formContent.fcreateBy = CONST.CREATOR;
             formContent.fmodifyTime = DateTime.Now.ToString();
             formContent.fmodifyBy = CONST.CREATOR;
             return Task.Factory.StartNew(() => formContent);
+        }
+
+        private void GetArticlesQtyByDate(DateTime sDateTime,DateTime eDateTime)
+        {
+            var query = context.BaseFormContentSet.Where(x=>x.FCreateTime >= sDateTime && x.FCreateTime <= eDateTime);
+            //按天汇总
+            var group = query.Select(x=>x.FCreateTime);
+
         }
 
         private BaseFormContent GetBaseFormContent(RaeClassContentType contentType, FormContent formContent)

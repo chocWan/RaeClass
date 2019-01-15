@@ -3,105 +3,206 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-        <li data-target="#myCarousel" data-slide-to="3"></li>
-    </ol>
-    <div class="carousel-inner" role="listbox">
-        <div class="item active">
-            <img src="~/images/banner1.svg" alt="ASP.NET" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how to build ASP.NET apps that can run anywhere.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner2.svg" alt="Visual Studio" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    There are powerful new features in Visual Studio for building modern web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner3.svg" alt="Package Management" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Bring in libraries from NuGet and npm, and automate tasks using Grunt or Gulp.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner4.svg" alt="Microsoft Azure" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-    </div>
-    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
+<div style="width:auto;height:400px;margin-top:50px;" id="raeChart">
 </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <h2>Application</h2>
-        <ul>
-            <li>Sample pages using ASP.NET Core MVC</li>
-            <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>How to</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Overview</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Run &amp; Deploy</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-        </ul>
-    </div>
-</div>
+<script src="~/lib/echart/echarts.js"></script>
+@section scripts{
+    <script>
+        var startDate = new Date().getDate();
+        var dateGap = 30;
+        var initDataJunior = {};
+        var initDataMiddle = {};
+        var initDataHigh = {};
+        for (var i = 0; i < dateGap; i++) { 
+            var key = moment().add(0 - i, "days").format("YYYY-MM-DD");
+            initDataJunior[key] = 0;
+            initDataJunior[initDataMiddle] = 0;
+            initDataJunior[initDataHigh] = 0;
+        }
+        //获取近30天，每天新增的文章数量
+
+    </script>
+    <script>
+        RaeClassForm.IsHomeMode = true;
+        var myChart = echarts.init(document.getElementById('raeChart'));
+        var dataMap = {};
+        function dataFormatter(obj) {
+            var pList = ["Junior", "Middle", "High"];
+            var temp;
+            for (var year = 2002; year <= 2004; year++) {
+                var max = 0;
+                var sum = 0;
+                temp = obj[year];
+                for (var i = 0, l = temp.length; i < l; i++) {
+                    max = Math.max(max, temp[i]);
+                    sum += temp[i];
+                    obj[year][i] = {
+                        name: pList[i],
+                        value: temp[i]
+                    }
+                }
+                obj[year + 'max'] = Math.floor(max / 100) * 100;
+                obj[year + 'sum'] = sum;
+            }
+            return obj;
+        }
+
+        dataMap.dataJunior = dataFormatter({
+            //max : 4000,
+            2004: [300, 300, 300],
+            2003: [200, 200, 200],
+            2002: [200, 250, 300],
+        });
+
+        dataMap.dataMiddle = dataFormatter({
+            //max : 26600,
+            2004: [300, 300, 300],
+            2003: [200, 200, 200],
+            2002: [300, 350, 400],
+        });
+
+        dataMap.dataHigh = dataFormatter({
+            //max : 25000,
+            2004: [300, 300, 300],
+            2003: [200, 200, 200],
+            2002: [100, 150, 500],
+        });
+
+        option = {
+            baseOption: {
+                timeline: {
+                    // y: 0,
+                    axisType: 'category',
+                    // realtime: false,
+                    // loop: false,
+                    autoPlay: false,
+                    // currentIndex: 2,
+                    playInterval: 1000,
+                    // controlStyle: {
+                    //     position: 'left'
+                    // },
+                    data: [
+                        '2002-01-01', '2003-01-01', '2004-01-01'
+                    ],
+                    label: {
+                        formatter: function (s) {
+                            return (new Date(s)).getFullYear();
+                        }
+                    }
+                },
+                title: {
+                    subtext: ''
+                },
+                tooltip: {
+                },
+                legend: {
+                    x: 'right',
+                    data: ['Junior', 'Middle', 'High'],
+                    selected: {
+                    }
+                },
+                calculable: true,
+                grid: {
+                    top: 80,
+                    bottom: 100,
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow',
+                            label: {
+                                show: true,
+                                formatter: function (params) {
+                                    return params.value.replace('\n', '');
+                                }
+                            }
+                        }
+                    }
+                },
+                xAxis: [
+                    {
+                        'type': 'category',
+                        'axisLabel': { 'interval': 0 },
+                        'data': [
+                            'Read', 'Listen', 'Spoken'
+                        ],
+                        splitLine: { show: false }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: 'Quantity'
+                    }
+                ],
+                series: [
+                    { name: 'Junior', type: 'bar' },
+                    { name: 'Middle', type: 'bar' },
+                    { name: 'High', type: 'bar' },
+                    {
+                        name: 'ArticleRate',
+                        type: 'pie',
+                        center: ['70%', '20%'],
+                        radius: '28%',
+                        z: 100
+                    }
+                ]
+            },
+            options: [
+                {
+                    title: { text: '2002 ArticleRate' },
+                    series: [
+                        { data: dataMap.dataJunior['2002'] },
+                        { data: dataMap.dataMiddle['2002'] },
+                        { data: dataMap.dataHigh['2002'] },
+                        {
+                            data: [
+                                { name: 'Junior', value: dataMap.dataJunior['2002sum'] },
+                                { name: 'Middle', value: dataMap.dataMiddle['2002sum'] },
+                                { name: 'High', value: dataMap.dataHigh['2002sum'] }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: { text: '2003 ArticleRate' },
+                    series: [
+                        { data: dataMap.dataJunior['2003'] },
+                        { data: dataMap.dataMiddle['2003'] },
+                        { data: dataMap.dataHigh['2003'] },
+                        {
+                            data: [
+                                { name: 'Junior', value: dataMap.dataJunior['2003sum'] },
+                                { name: 'Middle', value: dataMap.dataMiddle['2003sum'] },
+                                { name: 'High', value: dataMap.dataHigh['2003sum'] }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: { text: '2004 ArticleRate' },
+                    series: [
+                        { data: dataMap.dataJunior['2004'] },
+                        { data: dataMap.dataMiddle['2004'] },
+                        { data: dataMap.dataHigh['2004'] },
+                        {
+                            data: [
+                                { name: 'Junior', value: dataMap.dataJunior['2004sum'] },
+                                { name: 'Middle', value: dataMap.dataMiddle['2004sum'] },
+                                { name: 'High', value: dataMap.dataHigh['2004sum'] }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+    </script>
+
+}
+
+
+

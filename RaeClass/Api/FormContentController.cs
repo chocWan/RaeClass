@@ -47,6 +47,13 @@ namespace RaeClass.Api
             return Json(new { content = await formContentRepository.GetEmptyFormContent() });
         }
 
+        [HttpGet("GetArticlesByDate")]
+        public async Task<JsonResult> GetArticlesByDate(string sdate,string edate)
+        {
+
+            return Json(new { content = await formContentRepository.GetEmptyFormContent() });
+        }
+
         [HttpPost("Save")]
         public async Task<JsonResult> Save(RaeClassContentType contentType, FormContent formContent)
         {
@@ -145,10 +152,24 @@ namespace RaeClass.Api
             formContens.Where(x=>x.fdocStatus.Equals(DocStatus.AUDIT)).ToList().ForEach(item => {
                 item.frecordFileId1 = CommonUtils.GetRecordFilePrefix(contentType) + item.frecordFileId1;
                 item.frecordFileId2 = CommonUtils.GetRecordFilePrefix(contentType) + item.frecordFileId2;
+                item.fcnContent = FilterHtmlStr(item.fcnContent);
+                item.fenContent = FilterHtmlStr(item.fenContent);
                 sb.AppendLine(JsonHelper.SerializeObject(item));
             });
             byte[] fileContents = System.Text.Encoding.Default.GetBytes(sb.ToString());
             return File(fileContents, System.Net.Mime.MediaTypeNames.Application.Octet, contentType +"-[" + DateTime.Now.ToString() + "].json"); //关键语句
+        }
+
+        private string FilterHtmlStr(string htmlStr)
+        {
+            HashSet<string> blackHtmlSet = new HashSet<string>();
+            string _htmlStr = string.Empty;
+            blackHtmlSet.Add("article");
+            foreach (string item in blackHtmlSet)
+            {
+                _htmlStr = htmlStr.Replace("<"+item+">","").Replace("</"+item+">","").Replace("<" + item+"/>","");
+            }
+            return _htmlStr;
         }
 
     }

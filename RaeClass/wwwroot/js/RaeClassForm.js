@@ -139,10 +139,13 @@ RaeClassForm = {
     IsListMode: false,
     IsQueryMode: false,
     IsAddMode: false,
+    IsHomeMode: false,
     SeletedNumbers:[],
     init: function () {
-        RaeClassForm.addFloatingTool();
-        RaeClassForm.bindToolEvent();
+        if (!RaeClassForm.IsHomeMode) {
+            RaeClassForm.addFloatingTool();
+            RaeClassForm.bindToolEvent();
+        }
         RaeClassForm.updateNavBannerView();
     },
     initFormContent: function (fnumber) {
@@ -158,6 +161,8 @@ RaeClassForm = {
     setFormByContent: function () {
         var $_ueditor_cn = UE.getEditor('editor_CN');
         var $_ueditor_en = UE.getEditor('editor_EN');
+        $("#_id").val(RaeClassForm.formContent._id);
+        $("#_openid").val(RaeClassForm.formContent._openid);
         $("#fnumber").val(RaeClassForm.formContent.fnumber);
         $("#fname").val(RaeClassForm.formContent.fname);
         $("#flevel").val(RaeClassForm.formContent.flevel);
