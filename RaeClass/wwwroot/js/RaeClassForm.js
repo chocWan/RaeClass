@@ -100,6 +100,17 @@ function isNullOrEmpty() {
     return flag;
 }
 
+function getDocStatusDesc(code) 
+{
+    switch (code) {
+        case DocStatus.SAVE: return "SAVED"; break;
+        case DocStatus.DELETE: return "DELETED"; break;
+        case DocStatus.FORBID: return "FORBIDED" ; break;
+        case DocStatus.AUDIT: return "APPROVED"; break;
+        default: return "";
+    }
+}
+
 ToolName = {
     SAVE:"Save",
     DELETE:"Delete",

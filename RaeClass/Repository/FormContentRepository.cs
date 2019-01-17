@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RaeClass.Config;
 using RaeClass.Helper;
 using RaeClass.Models;
@@ -175,15 +177,20 @@ namespace RaeClass.Repository
             return Task.Factory.StartNew(() => formContent);
         }
 
-        public List<ArticleGroupModel> GetArticlesQtyByDate(DateTime sDateTime,DateTime eDateTime)
+        public List<JArray> GetArticlesQtyByDate(int dateGap)
         {
+            DateTime eDate = DateTime.Now;
+            DateTime sDate = DateTime.Now.AddDays(0 - dateGap);
             List<ArticleGroupModel> list = new List<ArticleGroupModel>();
+            List<JArray> resList = new List<JArray>();
+            #region  按日期进行汇总，刑如如：[{ ContentType:"Read",Date: "2018-11-15", Count: 1, Level: "1" }]
             var res = context.BaseFormContentSet
-                .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(sDateTime.ToString("yyyy-MM-dd")) >= 0)
-                .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(eDateTime.ToString("yyyy-MM-dd")) <= 0)
-                .Select(x => new { x.FCreateTime, x.FLevel })
-                .GroupBy(x => new { DateStr = x.FCreateTime.ToString("yyyy-MM-dd"), Level = x.FLevel })
+                .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(sDate.ToString("yyyy-MM-dd")) >= 0)
+                .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(eDate.ToString("yyyy-MM-dd")) <= 0)
+                .Select(x => new { x.FContentType,x.FCreateTime, x.FLevel })
+                .GroupBy(x => new { ContentType = x.FContentType,DateStr = x.FCreateTime.ToString("yyyy-MM-dd"), Level = x.FLevel })
                 .Select(x => new {
+                    ContentType = x.Key.ContentType,
                     DateStr = x.Key.DateStr,
                     Level = x.Key.Level,
                     Count = x.Count(),
@@ -191,13 +198,64 @@ namespace RaeClass.Repository
             foreach (var item in res)
             {
                 var _item = new ArticleGroupModel();
+                _item.ContentType = item.ContentType;
                 _item.DateStr = item.DateStr;
                 _item.Level = item.Level;
                 _item.Count = item.Count;
                 list.Add(_item);
             }
-
-            return list;
+            #endregion
+            //组装格式，Junior:{Date:[1,2,3]}
+            JArray juniorObjList = new JArray();
+            JArray middleObjList = new JArray();
+            JArray highObjList = new JArray();
+            for (int i = 0; i < dateGap; i++)
+            {
+                var date = sDate.AddDays(i + 1).ToString("yyyy-MM-dd");
+                #region Junior
+                var countJuniorRead = list.Where(x => x.Level.Equals("1") && x.DateStr.Equals(date) && x.ContentType.Equals("Read")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                var ccountJuniorListen = list.Where(x => x.Level.Equals("1") && x.DateStr.Equals(date) && x.ContentType.Equals("Listen")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                var countJuniorSpoken = list.Where(x => x.Level.Equals("1") && x.DateStr.Equals(date) && x.ContentType.Equals("Spoken")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                JObject juniorObj = new JObject();
+                List<int> countJuniorArr = new List<int>();
+                countJuniorArr.Add(countJuniorRead);
+                countJuniorArr.Add(ccountJuniorListen);
+                countJuniorArr.Add(countJuniorSpoken);
+                JToken juniorJtoken = JToken.Parse(JsonConvert.SerializeObject(countJuniorArr));
+                juniorObj.Add(date, juniorJtoken);
+                juniorObjList.Add(juniorObj);
+                #endregion
+                #region Middle
+                var countMiddleRead = list.Where(x => x.Level.Equals("2") && x.DateStr.Equals(date) && x.ContentType.Equals("Read")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                var ccountMiddleListen = list.Where(x => x.Level.Equals("2") && x.DateStr.Equals(date) && x.ContentType.Equals("Listen")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                var countMiddleSpoken = list.Where(x => x.Level.Equals("2") && x.DateStr.Equals(date) && x.ContentType.Equals("Spoken")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                JObject middleObj = new JObject();
+                List<int> countMiddleArr = new List<int>();
+                countMiddleArr.Add(countMiddleRead);
+                countMiddleArr.Add(ccountMiddleListen);
+                countMiddleArr.Add(countMiddleSpoken);
+                JToken middleJtoken = JToken.Parse(JsonConvert.SerializeObject(countMiddleArr));
+                middleObj.Add(date, middleJtoken);
+                middleObjList.Add(middleObj);
+                #endregion
+                #region High
+                var countHigheRead = list.Where(x => x.Level.Equals("3") && x.DateStr.Equals(date) && x.ContentType.Equals("Read")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                var ccountHighListen = list.Where(x => x.Level.Equals("3") && x.DateStr.Equals(date) && x.ContentType.Equals("Listen")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                var countHighSpoken = list.Where(x => x.Level.Equals("3") && x.DateStr.Equals(date) && x.ContentType.Equals("Spoken")).Select(x => Convert.ToInt32(x.Count)).FirstOrDefault();
+                JObject highObj = new JObject();
+                List<int> countHighArr = new List<int>();
+                countHighArr.Add(countHigheRead);
+                countHighArr.Add(ccountHighListen);
+                countHighArr.Add(countHighSpoken);
+                JToken highJtoken = JToken.Parse(JsonConvert.SerializeObject(countHighArr));
+                highObj.Add(date, highJtoken);
+                highObjList.Add(highObj);
+                #endregion
+            }
+            resList.Add(juniorObjList);
+            resList.Add(middleObjList);
+            resList.Add(highObjList);
+            return resList;
         }
 
         private BaseFormContent GetBaseFormContent(RaeClassContentType contentType, FormContent formContent)

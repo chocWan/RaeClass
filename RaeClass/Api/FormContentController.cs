@@ -50,9 +50,7 @@ namespace RaeClass.Api
         [HttpGet("GetArticlesByDate")]
         public JsonResult GetArticlesByDate(int dateGap)
         {
-            DateTime sDate = DateTime.Now;
-            DateTime eDate = DateTime.Now.AddDays(0 - dateGap);
-            return Json(new { content = formContentRepository.GetArticlesQtyByDate(sDate,eDate) });
+            return Json(new { content = formContentRepository.GetArticlesQtyByDate(dateGap) });
         }
 
         [HttpPost("Save")]

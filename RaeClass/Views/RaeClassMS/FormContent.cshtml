@@ -66,14 +66,21 @@
                             formatter: function (i, row) {            // 每次加载 checkbox 时判断当前 row 的 id 是否已经存在全局 Set() 里
                                 if ($.inArray(row.fnumber, RaeClassForm.SeletedNumbers) != -1) {// 因为 判断数组里有没有这个 id 
                                     return {
-                                        checked: true               // 存在则选中
+                                        checked: true // 存在则选中
                                     }
                                 }
                             }},
                         { field: 'fnumber', title: '文章编号' },
                         { field: 'fname', title: '文章名称' },
                         { field: 'fcreateTime', title: '创建时间' },
-                        { field: 'fdocStatus', title: '文章状态' },
+                        {
+                            field: 'fdocStatus', title: '文章状态',
+                            formatter: function setSelect(value, row, index) 
+                            {
+                                //var strHtml = "<span style='color:red'>" + getDocStatusDesc(value)+"</span>"
+                                return getDocStatusDesc(value);
+                            }
+                         },
                     ],
                 });
             };

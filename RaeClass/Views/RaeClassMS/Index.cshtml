@@ -10,38 +10,25 @@
 @section scripts{
     <script>
         var startDate = new Date().getDate();
-        var dateGap = 30;
+        var dateGap = 15;
         var initDataJunior = {};
         var initDataMiddle = {};
         var initDataHigh = {};
-        var articles = [{ Date: "2018-11-15", Count: 1, Level: "1" }, { Date: "2018-11-16", Count: 1, Level: "1" }];
-
-        for (var i = 0; i < dateGap; i++) { 
-            var key = moment().add(0 - i, "days").format("YYYY-MM-DD");
-            initDataJunior[key] = 0;
-            initDataJunior[initDataMiddle] = 0;
-            initDataJunior[initDataHigh] = 0;
-
-        }
         //获取近30天，每天新增的文章数量
         var url = UrlHelper.getUrl("GetArticlesByDate");
         var articles = null;
+        var articlesJuniorJson = {};
+        var articlesMiddleJson = {};
+        var articlesHighJson = {};
         $getJSONSync(url, { dateGap: dateGap }, function (data) {
             acticles = data.content;
+            for (var i = 0; i < dateGap;i++) {
+                var key = moment().add(1 - dateGap + i, "days").format("YYYY-MM-DD");
+                articlesJuniorJson[key] = acticles[0][i][key];
+                articlesMiddleJson[key] = acticles[1][i][key];
+                articlesHighJson[key] = acticles[2][i][key];
+            }
         });
-        for (var i = 0; i < articles.length; i++)
-        {
-            if (articles[i].Level === "1") { 
-
-            }
-            if (articles[i].Level === "2") {
-
-            }
-            if (articles[i].Level === "3") {
-
-            }
-        }
-
     </script>
     <script>
         RaeClassForm.IsHomeMode = true;
@@ -50,64 +37,44 @@
         function dataFormatter(obj) {
             var pList = ["Junior", "Middle", "High"];
             var temp;
-            for (var year = 2002; year <= 2004; year++) {
+            for (var i = 0; i < dateGap; i++) {
                 var max = 0;
                 var sum = 0;
-                temp = obj[year];
-                for (var i = 0, l = temp.length; i < l; i++) {
-                    max = Math.max(max, temp[i]);
-                    sum += temp[i];
-                    obj[year][i] = {
-                        name: pList[i],
-                        value: temp[i]
+                var key = moment().add(1 - dateGap + i, "days").format("YYYY-MM-DD");
+                temp = obj[key];
+                for (var j = 0, l = temp.length; j < l; j++) {
+                    max = Math.max(max, temp[j]);
+                    sum += temp[j];
+                    obj[key][j] = {
+                        name: pList[j],
+                        value: temp[j]
                     }
                 }
-                obj[year + 'max'] = Math.floor(max / 100) * 100;
-                obj[year + 'sum'] = sum;
+                obj[key + 'max'] = Math.floor(max / 100) * 100;
+                obj[key + 'sum'] = sum;
             }
             return obj;
         }
-
-        dataMap.dataJunior = dataFormatter({
-            //max : 4000,
-            2004: [300, 300, 300],
-            2003: [200, 200, 200],
-            2002: [200, 250, 300],
-        });
-
-        dataMap.dataMiddle = dataFormatter({
-            //max : 26600,
-            2004: [300, 300, 300],
-            2003: [200, 200, 200],
-            2002: [300, 350, 400],
-        });
-
-        dataMap.dataHigh = dataFormatter({
-            //max : 25000,
-            2004: [300, 300, 300],
-            2003: [200, 200, 200],
-            2002: [100, 150, 500],
-        });
-
+        dataMap.dataJunior = dataFormatter(articlesJuniorJson);
+        dataMap.dataMiddle = dataFormatter(articlesMiddleJson);
+        dataMap.dataHigh = dataFormatter(articlesHighJson);
         option = {
             baseOption: {
                 timeline: {
-                    // y: 0,
+                     //y: 0,
                     axisType: 'category',
-                    // realtime: false,
+                    //realtime: false,
                     // loop: false,
                     autoPlay: false,
-                    // currentIndex: 2,
+                    currentIndex: 0,
                     playInterval: 1000,
                     // controlStyle: {
                     //     position: 'left'
                     // },
-                    data: [
-                        '2002-01-01', '2003-01-01', '2004-01-01'
-                    ],
+                    data: [],
                     label: {
                         formatter: function (s) {
-                            return (new Date(s)).getFullYear();
+                            return s;
                         }
                     }
                 },
@@ -162,66 +129,38 @@
                     {
                         name: 'ArticleRate',
                         type: 'pie',
-                        center: ['70%', '20%'],
-                        radius: '28%',
+                        center: ['70%', '30%'],
+                        radius: '25%',
                         z: 100
                     }
                 ]
             },
-            options: [
-                {
-                    title: { text: '2002 ArticleRate' },
-                    series: [
-                        { data: dataMap.dataJunior['2002'] },
-                        { data: dataMap.dataMiddle['2002'] },
-                        { data: dataMap.dataHigh['2002'] },
-                        {
-                            data: [
-                                { name: 'Junior', value: dataMap.dataJunior['2002sum'] },
-                                { name: 'Middle', value: dataMap.dataMiddle['2002sum'] },
-                                { name: 'High', value: dataMap.dataHigh['2002sum'] }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    title: { text: '2003 ArticleRate' },
-                    series: [
-                        { data: dataMap.dataJunior['2003'] },
-                        { data: dataMap.dataMiddle['2003'] },
-                        { data: dataMap.dataHigh['2003'] },
-                        {
-                            data: [
-                                { name: 'Junior', value: dataMap.dataJunior['2003sum'] },
-                                { name: 'Middle', value: dataMap.dataMiddle['2003sum'] },
-                                { name: 'High', value: dataMap.dataHigh['2003sum'] }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    title: { text: '2004 ArticleRate' },
-                    series: [
-                        { data: dataMap.dataJunior['2004'] },
-                        { data: dataMap.dataMiddle['2004'] },
-                        { data: dataMap.dataHigh['2004'] },
-                        {
-                            data: [
-                                { name: 'Junior', value: dataMap.dataJunior['2004sum'] },
-                                { name: 'Middle', value: dataMap.dataMiddle['2004sum'] },
-                                { name: 'High', value: dataMap.dataHigh['2004sum'] }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            options:[]
         };
 
+        for (var i = 0; i < dateGap; i++) {
+            var key = moment().add(1 - dateGap + i, "days").format("YYYY-MM-DD");
+            var title = key + " ArticleRate";
+            var series = [];
+            series.push({ data: dataMap.dataJunior[key] });
+            series.push({ data: dataMap.dataMiddle[key] });
+            series.push({ data: dataMap.dataHigh[key] });
+            var sumData = [];
+            sumData.push({ name: 'Junior', value: dataMap.dataJunior[key + 'sum'] });
+            sumData.push({ name: 'Middle', value: dataMap.dataMiddle[key + 'sum'] });
+            sumData.push({ name: 'High', value: dataMap.dataHigh[key + 'sum'] });
+            series.push({ data: sumData });
+            var optionItem = {};
+            optionItem["title"] = { "text": title };
+            optionItem["series"] = series;
+            option.options.push(optionItem);
+            option.baseOption.timeline.data.push(moment().add(1 - dateGap + i, "days").format("MM-DD"));
+        }
+        option.baseOption.timeline.currentIndex = dateGap - 1;
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
 
     </script>
-
 }
 
 

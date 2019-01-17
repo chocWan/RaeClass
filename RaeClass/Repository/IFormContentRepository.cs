@@ -1,4 +1,5 @@
-﻿using RaeClass.Config;
+﻿using Newtonsoft.Json.Linq;
+using RaeClass.Config;
 using RaeClass.Models;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,6 @@ namespace RaeClass.Repository
         Task<FormContent> GetFormContentAsync(string fumber);
         Task<List<FormContent>> GetFormContentListAsync(List<string> fumbers);
         Task<FormContent> GetEmptyFormContent();
-        List<ArticleGroupModel> GetArticlesQtyByDate(DateTime sDateTime, DateTime eDateTime);
+        List<JArray> GetArticlesQtyByDate(int dateGap);
     }
 }
