@@ -139,9 +139,9 @@ MessType = {
 
 UrlHelper = {
     getUrl: function (actionName) {
-        return "http://localhost:5000/api/FormContent/" + actionName;
+        return window.location.origin + "/api/FormContent/" + actionName;
     },
-    GET: "http://localhost:5000/api/FormContent/",
+    GET: window.location.origin + "/api/FormContent/",
 };
 
 RaeClassForm = {

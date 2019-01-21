@@ -4,15 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["contentType"] - RaeClass</title>
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-table.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-treeview.css" />
-        <link href="~/css/RaeClassForm.css" rel="stylesheet" />
-        <link href="~/lib/jquery-float/floating.css" rel="stylesheet" />
-        <link href="~/lib/jquery-float/iconfont.css" rel="stylesheet" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-treeview.css" />
+    <link href="~/css/RaeClassForm.css" rel="stylesheet" />
+    <link href="~/lib/jquery-float/floating.css" rel="stylesheet" />
+    <link href="~/lib/jquery-float/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
     <style>
         input:focus {
             outline: none;
@@ -60,17 +58,15 @@
         </footer>
     </div>
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/moment/moment.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap-table.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap-treeview.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap-table-locale-all.min.js"></script>
-        <script src="~/lib/jquery-float/floating.js"></script>
-        <script src="~/js/RaeClassForm.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/moment/moment.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-table.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-treeview.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-table-locale-all.min.js"></script>
+    <script src="~/lib/jquery-float/floating.js"></script>
+    <script src="~/js/RaeClassForm.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script type="text/javascript">
         $(function () {
             RaeClassForm.init();
@@ -90,9 +86,9 @@
         $('#headSearchQueryContent').bind('keyup', function (event) {
             if (event.keyCode == "13") {
                 var queryStr = $(this).val();
-                window.location.href = "/RaeClassMS/FormContentSearch?queryStr=" + queryStr ;
+                window.location.href = "/RaeClassMS/FormContentSearch?queryStr=" + queryStr;
             }
-        });        
+        });
     </script>
     @RenderSection("Scripts", required: false)
 </body>
