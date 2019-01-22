@@ -43,6 +43,7 @@ namespace RaeClass
             services.AddMvc();
             services.AddScoped<IFormContentRepository, FormContentRepository>();
             services.AddScoped<ISerialNumberRepository, SerialNumberRepository>();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +61,7 @@ namespace RaeClass
 
             InitData(app.ApplicationServices);
             app.UseStaticFiles();
+            app.UseSession();
             app.UseMvcWithDefaultRoute();
 
         }
@@ -76,7 +78,7 @@ namespace RaeClass
                     var serialNumbers = new List<SerialNumber>{
                         new SerialNumber{ FContentType="Read",FCurrentGeneratedIndex = 1000,FModifyTime = DateTime.Now},
                         new SerialNumber{ FContentType="Listen",FCurrentGeneratedIndex = 1000,FModifyTime = DateTime.Now},
-                        new SerialNumber{ FContentType="Oral",FCurrentGeneratedIndex = 1000,FModifyTime = DateTime.Now},
+                        new SerialNumber{ FContentType="Spoken",FCurrentGeneratedIndex = 1000,FModifyTime = DateTime.Now},
                         new SerialNumber{ FContentType="Tech",FCurrentGeneratedIndex = 1000,FModifyTime = DateTime.Now},
                     };
                     db.SerialNumberSet.AddRange(serialNumbers);

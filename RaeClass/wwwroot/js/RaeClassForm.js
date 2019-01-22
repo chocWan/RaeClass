@@ -58,7 +58,7 @@ function getUrlVars(name) {
 }
 
 function $alertWarning(message, callback) {
-    var msgWindow = '<div class=\"modal fade\" data-backdrop=\"static\">'
+    var msgWindow = '<div class=\"modal fade\">'
         + '  <div class=\"modal-dialog\">'
         + '    <div class=\"modal-content\">'
         + '      <div class=\"modal-header\">'
@@ -241,28 +241,28 @@ RaeClassForm = {
     initFloatToolVisibility: function () {
         if (RaeClassForm.IsListMode === false) {
             if (RaeClassForm.isAddMode === true) {
-                RaeClassForm.hideFloatingTool([ToolName.AUDIT, ToolName.ADD, ToolName.REAUDIT, ToolName.FREEZE, , ToolName.UNFREEZE, ToolName.EXPORT]);
+                RaeClassForm.hideFloatingTool([ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, , ToolName.UNFREEZE, ToolName.EXPORT]);
                 return;
             }
             if (RaeClassForm.formContent.fdocStatus === DocStatus.FORBID) {
-                RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, ToolName.ADD, ToolName.EXPORT]);
+                RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.AUDIT, ToolName.REAUDIT, ToolName.FREEZE, ToolName.EXPORT]);
             }
             if (RaeClassForm.formContent.fdocStatus === DocStatus.AUDIT) {
-                RaeClassForm.hideFloatingTool([ToolName.AUDIT, ToolName.ADD, ToolName.UNFREEZE]);
+                RaeClassForm.hideFloatingTool([ToolName.AUDIT, ToolName.UNFREEZE]);
             }
             if (RaeClassForm.formContent.fdocStatus === DocStatus.SAVE) {
-                RaeClassForm.hideFloatingTool([ToolName.REAUDIT, ToolName.ADD, ToolName.UNFREEZE, ToolName.EXPORT]);
+                RaeClassForm.hideFloatingTool([ToolName.REAUDIT, ToolName.UNFREEZE, ToolName.EXPORT]);
             }
+            return;
+        }
+        if (RaeClassForm.IsQueryMode === true) {
+            RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.ADD]);
             return;
         }
         if (RaeClassForm.IsListMode === true) {
             if (RaeClassForm.IsListMode === true) {
                 RaeClassForm.hideFloatingTool([ToolName.SAVE]);
             }
-            return;
-        }
-        if (RaeClassForm.IsQueryMode === true) {
-            RaeClassForm.hideFloatingTool([ToolName.SAVE, ToolName.ADD]);
             return;
         }
         

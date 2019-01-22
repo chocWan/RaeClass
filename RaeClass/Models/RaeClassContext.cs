@@ -16,12 +16,14 @@ namespace RaeClass.Models
 
         public DbSet<SerialNumber> SerialNumberSet { get; set; }
         public DbSet<BaseFormContent> BaseFormContentSet { get; set; }
+        public DbSet<User> UserSet { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //自定义表名
             modelBuilder.Entity<BaseFormContent>().ToTable("BaseFormContent", "dbo");
             modelBuilder.Entity<SerialNumber>().ToTable("SerialNumber", "dbo");
+            modelBuilder.Entity<User>().ToTable("User", "dbo");
 
             base.OnModelCreating(modelBuilder);
         }
