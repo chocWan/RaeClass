@@ -17,14 +17,18 @@ namespace RaeClass.Models
 
     public class LoginModel
     {
-        [Required(ErrorMessage = "用户名不能为空。")]
-        public string UserName { get; set; }
+        public string Account { get; set; }
 
-        [Required(ErrorMessage = "密码不能为空。")]
-        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
+    }
+
+    public class AuthUser
+    {
+        public string Account { get; set; }
+
+        public bool IsAuth { get; set; }
     }
 
 

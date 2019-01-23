@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,8 @@ namespace RaeClass
             services.AddMvc();
             services.AddScoped<IFormContentRepository, FormContentRepository>();
             services.AddScoped<ISerialNumberRepository, SerialNumberRepository>();
-            services.AddSession();
+            //注册Cookie认证服务
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,9 +63,8 @@ namespace RaeClass
 
             InitData(app.ApplicationServices);
             app.UseStaticFiles();
-            app.UseSession();
+            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-
         }
 
         private void InitData(IServiceProvider serviceProvider)
