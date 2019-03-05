@@ -183,12 +183,13 @@ namespace RaeClass.Repository
             DateTime sDate = DateTime.Now.AddDays(0 - dateGap);
             List<ArticleGroupModel> list = new List<ArticleGroupModel>();
             List<JArray> resList = new List<JArray>();
-            #region  按日期进行汇总，刑如如：[{ ContentType:"Read",Date: "2018-11-15", Count: 1, Level: "1" }]
+            #region  按日期进行汇总，形如：[{ ContentType:"Read",Date: "2018-11-15", Count: 1, Level: "1" }]
             var res = context.BaseFormContentSet
                 .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(sDate.ToString("yyyy-MM-dd")) >= 0)
                 .Where(x=>x.FCreateTime.ToString("yyyy-MM-dd").CompareTo(eDate.ToString("yyyy-MM-dd")) <= 0)
                 .Select(x => new { x.FContentType,x.FCreateTime, x.FLevel })
                 .GroupBy(x => new { ContentType = x.FContentType,DateStr = x.FCreateTime.ToString("yyyy-MM-dd"), Level = x.FLevel })
+                .OrderBy(x=>x.Key.DateStr)
                 .Select(x => new {
                     ContentType = x.Key.ContentType,
                     DateStr = x.Key.DateStr,

@@ -24,7 +24,7 @@ namespace RaeClass.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userName = HttpContext.User.Claims.First().Value;
-                Redirect(RETURNURL);
+                return Redirect(RETURNURL);
             }
             return View();
         }
@@ -33,14 +33,22 @@ namespace RaeClass.Controllers
         [HttpPost]
         public IActionResult Login(LoginModel model)
         {
+            
             try
             {
-                if (!string.IsNullOrEmpty(model.Account))
+                if (string.IsNullOrEmpty(model.Account) || string.IsNullOrEmpty(model.Password))
                 {
-                    var claims = new[] { new Claim("UserName", model.Account) };
-                    var claimsIdentity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
-                    ClaimsPrincipal user = new ClaimsPrincipal(claimsIdentity);
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user).Wait();
+                    throw new Exception("username or password can not be empty!");
+                }
+                if (!User.Identity.IsAuthenticated)
+                {
+                    if ("kingking".Equals(model.Account.Trim()))//后续添加UserService做验证
+                    {
+                        var claims = new[] { new Claim("UserName", model.Account) };
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        ClaimsPrincipal user = new ClaimsPrincipal(claimsIdentity);
+                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user).Wait();
+                    }
                 }
             }
             catch (Exception ex)
@@ -53,7 +61,7 @@ namespace RaeClass.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            return Redirect("/Account/Login");
         }
 
     }
