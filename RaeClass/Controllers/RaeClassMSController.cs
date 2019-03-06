@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaeClass.Config;
 using RaeClass.Models;
@@ -9,6 +10,7 @@ using RaeClass.Repository;
 
 namespace RaeClass.Controllers
 {
+    [Authorize]
     public class RaeClassMSController : Controller
     {
 

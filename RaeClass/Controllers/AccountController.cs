@@ -16,16 +16,22 @@ namespace RaeClass.Controllers
     public class AccountController : Controller
     {
 
-        public static string RETURNURL = "/RaeClassMS";
+        public static readonly string HOME_RETURNURL = "/RaeClassMS";
+        public static readonly string LOGOUTURL = "/Account/Login";
 
         [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                returnUrl = HOME_RETURNURL;
+            }
             if (User.Identity.IsAuthenticated)
             {
                 var userName = HttpContext.User.Claims.First().Value;
-                return Redirect(RETURNURL);
+                return Redirect(returnUrl);
             }
+            ViewBag.returnUrl = returnUrl;
             return View();
         }
 
@@ -55,13 +61,13 @@ namespace RaeClass.Controllers
             {
                 return Json(new { IsAuthenticated = false, Error = string.IsNullOrEmpty(ex.Message) ? "Invalid username or password!" : ex.Message });
             }
-            return Json(new { IsAuthenticated = true, returnUrl = RETURNURL });
+            return Json(new { IsAuthenticated = true, HostUrl = Request.Headers["Host"] });
         }
 
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/Account/Login");
+            return Redirect(LOGOUTURL);
         }
 
     }

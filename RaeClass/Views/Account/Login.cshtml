@@ -22,7 +22,6 @@
                     <input type="password" placeholder="Password" id="password">
                     <input id="returnUrl" name="returnUrl" type="hidden" value="@ViewBag.returnUrl" />
                     <button type="button" id="btn_login">Sign In</button>
-                    <button type="button" id="btn_logout">Logout</button>
                     <div id="prompt" class="prompt"></div>
                 </form>
             </div>
@@ -41,7 +40,6 @@
                 }
             });
             $("#btn_login").click(signInUser);
-            $("#btn_logout").click(logoutUser);
         });
         var disableLogin = function (flag) {
             if (flag) {
@@ -79,7 +77,7 @@
                 //code: $('#validate_Code').val(),
                 //clientSecret: $("#clientSecret").val(),
                 //clientid: $("#clientid").val(),
-                returnUrl: $("#returnUrl").val(),
+                ReturnUrl: $("#returnUrl").val(),
                 //Integrated: false  //$('#integrated').is(':checked')
             }
             $.ajax({
@@ -88,17 +86,17 @@
                 data: accountData,
                 dataType: 'json'
             }).done(function (data) {
-                if (data.IsAuthenticated) { 
-                    location.href = data.returnUrl;
+                if (data.isAuthenticated) { 
+                    var hostUrl = data.hostUrl;
+                    var returnUrl = decodeURIComponent(getUrlVars('ReturnUrl'));
+                    returnUrl = returnUrl.indexOf('/') == 0 ? 'http://' + hostUrl + returnUrl : returnUrl;       
+                    location.href = returnUrl;
                 }
             }).fail(function (data) {
                 $("#prompt").val();
                 disableLogin(false);
             });
-        }; 
-        var logoutUser = function () { 
-            location.href = "/Account/Logout";
-        };
+        };         
     </script>
 
 </body>
